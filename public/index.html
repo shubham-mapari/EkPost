@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>EkPost – One Post, Everywhere | Multi-Platform Social Media SaaS</title>
+  <meta name="description" content="Publish & schedule content across LinkedIn, Instagram, Facebook, X, YouTube, and TikTok simultaneously with EkPost.">
+  <meta name="theme-color" content="#0a0e17">
+  <link rel="icon" type="image/png" href="/image.png">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  
+  <!-- ================= TOP NAVIGATION ================= -->
+  <header class="navbar">
+    <div class="nav-container">
+      <div class="brand" id="brandLogoBtn" style="cursor: pointer;">
+        <div class="brand-logo">
+          <img src="/image.png" alt="EkPost logo">
+        </div>
+        <div class="brand-text">
+          <h1>EkPost <span class="badge-tag">SaaS Platform</span></h1>
+          <p data-i18n="tagline">One Post, Everywhere</p>
+        </div>
+      </div>
+
+      <!-- App Main Desktop Navigation -->
+      <nav class="nav-links desktop-nav" id="mainNavLinks">
+        <button class="nav-tab active" data-view="landing-view">
+          <i data-lucide="home"></i> <span data-i18n="nav_home">Home</span>
+        </button>
+        <button class="nav-tab" data-view="dashboard-view">
+          <i data-lucide="layout-dashboard"></i> <span data-i18n="nav_dashboard">Dashboard</span>
+        </button>
+        <button class="nav-tab" data-view="composer-view">
+          <i data-lucide="edit-3"></i> <span data-i18n="nav_new_post">+ New Post</span>
+        </button>
+        <button class="nav-tab" data-view="history-view">
+          <i data-lucide="calendar"></i> <span data-i18n="nav_posts">Posts & Calendar</span>
+        </button>
+        <button class="nav-tab" data-view="settings-view">
+          <i data-lucide="settings"></i> <span data-i18n="nav_settings">Settings</span>
+        </button>
+      </nav>
+      
+      <!-- Right Header Actions, Language Switcher & User Auth -->
+      <div class="nav-actions">
+        <!-- Multi-Language Selector -->
+        <div class="lang-selector-box">
+          <i data-lucide="globe" class="lang-icon"></i>
+          <select id="languageSelect" class="lang-select">
+            <option value="en" selected>English</option>
+            <option value="mr">मराठी</option>
+          </select>
+        </div>
+
+        <button id="refreshBtn" class="btn-icon desktop-only" title="Refresh Data">
+          <i data-lucide="refresh-cw"></i>
+        </button>
+        
+        <div id="userProfileArea">
+          <button id="openAuthModalBtn" class="btn-auth">
+            <i data-lucide="log-in"></i> <span class="auth-btn-text" data-i18n="btn_login_signup">Get Started</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= VIEW 1: LANDING PAGE (HOMEPAGE) ================= -->
+  <section id="landing-view" class="view-section active">
+    <!-- Hero Section -->
+    <div class="hero-section">
+      <div class="hero-content">
+        <span class="hero-pill" data-i18n="hero_pill">
+          ✨ The Ultimate Social Media Management Tool for Creators & Businesses
+        </span>
+        <h1 class="hero-title">
+          <span data-i18n="hero_title_1">One Post,</span> <span class="gradient-text" data-i18n="hero_title_2">Everywhere.</span>
+        </h1>
+        <p class="hero-subtitle" data-i18n="hero_subtitle">
+          Write your content in one unified composer and publish or schedule simultaneously across LinkedIn, Instagram, Facebook, X (Twitter), YouTube, and TikTok in just one click.
+        </p>
+
+        <div class="hero-cta-group">
+          <button class="btn btn-hero-primary" id="landingGetStartedBtn">
+            <i data-lucide="zap"></i> <span data-i18n="btn_start_trial">Start Free Trial</span>
+          </button>
+          <button class="btn btn-hero-secondary" id="landingExploreDashboardBtn">
+            <i data-lucide="play-circle"></i> <span data-i18n="btn_view_demo">View Live Demo</span>
+          </button>
+        </div>
+
+        <!-- Supported Platforms Logos Bar -->
+        <div class="platforms-bar">
+          <p class="platforms-label" data-i18n="platforms_label">Supported on all major social networks:</p>
+          <div class="platforms-logo-list">
+            <span class="p-chip"><span class="social-logo social-logo-linkedin social-logo-small">in</span> LinkedIn</span>
+            <span class="p-chip"><span class="social-logo social-logo-instagram">◎</span> Instagram</span>
+            <span class="p-chip"><span class="social-logo social-logo-facebook">f</span> Facebook</span>
+            <span class="p-chip"><i data-lucide="twitter"></i> X (Twitter)</span>
+            <span class="p-chip"><i data-lucide="youtube"></i> YouTube</span>
+            <span class="p-chip"><i data-lucide="video"></i> TikTok</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Core Features Grid -->
+    <div class="container-padded">
+      <div class="section-title-box text-center">
+        <h2 data-i18n="features_title">🚀 Why Creators & Teams Choose EkPost</h2>
+        <p data-i18n="features_subtitle">All-in-one publishing suite designed for maximum reach and time-saving</p>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="f-icon bg-indigo"><i data-lucide="send"></i></div>
+          <h3 data-i18n="f1_title">Unified 1-Click Publishing</h3>
+          <p data-i18n="f1_desc">No more tab hopping. Publish your text, images, and videos across all your brand channels with a single click.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="f-icon bg-purple"><i data-lucide="calendar"></i></div>
+          <h3 data-i18n="f2_title">Smart Scheduling Queue</h3>
+          <p data-i18n="f2_desc">Plan weeks or months of content in advance. Automated background queues publish at the optimal time.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="f-icon bg-pink"><i data-lucide="sparkles"></i></div>
+          <h3 data-i18n="f3_title">AI Caption & Hashtag Assistant</h3>
+          <p data-i18n="f3_desc">Generate tailored post variations and high-engagement hashtags customized for each network instantly.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="f-icon bg-green"><i data-lucide="users"></i></div>
+          <h3 data-i18n="f4_title">Team Collaboration</h3>
+          <p data-i18n="f4_desc">Invite team members and clients with granular role-based permissions (Admin, Editor, Viewer).</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= VIEW 2: DASHBOARD (MAIN HOME SCREEN) ================= -->
+  <section id="dashboard-view" class="view-section hidden container-padded">
+    <!-- Welcome Header & Big CTA -->
+    <div class="dashboard-top-banner">
+      <div class="db-welcome-text">
+        <h2><span data-i18n="db_welcome">Welcome back,</span> <span id="dbUserName">Creator</span>! 👋</h2>
+        <p data-i18n="db_overview_sub">Real-time status of your connected social accounts and scheduled posts</p>
+      </div>
+      <button class="btn btn-create-post" id="btnGoToComposer">
+        <i data-lucide="plus-circle"></i> <span data-i18n="btn_create_new_post">+ Create New Post</span>
+      </button>
+    </div>
+
+    <!-- Connected Accounts Summary Bar -->
+    <div class="card mb-3">
+      <div class="card-header flex-between-resp">
+        <div class="card-title">
+          <i data-lucide="link-2" class="icon-accent"></i>
+          <h3 data-i18n="db_connected_summary">Connected Accounts Summary</h3>
+        </div>
+        <button class="btn-sm-connect" id="dbConnectAccountBtn" onclick="connectLinkedIn()">
+          <span class="social-logo social-logo-linkedin social-logo-small">in</span> <span>Connect LinkedIn</span>
+        </button>
+      </div>
+      <div id="dbAccountsSummary" class="accounts-summary-row">
+        <!-- Injected via JS -->
+      </div>
+    </div>
+
+    <!-- Quick Stats Grid -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon-wrap bg-indigo"><i data-lucide="check-circle-2"></i></div>
+        <div class="stat-data">
+          <span class="stat-label" data-i18n="stat_total_published">Total Posts Published</span>
+          <h3 id="dbStatTotalPublished" class="stat-value">0</h3>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon-wrap bg-purple"><i data-lucide="clock"></i></div>
+        <div class="stat-data">
+          <span class="stat-label" data-i18n="stat_upcoming_scheduled">Upcoming Scheduled Posts</span>
+          <h3 id="dbStatUpcoming" class="stat-value">0</h3>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon-wrap bg-pink"><i data-lucide="trending-up"></i></div>
+        <div class="stat-data">
+          <span class="stat-label" data-i18n="stat_estimated_reach">Estimated Reach & Views</span>
+          <h3 id="dbStatReach" class="stat-value">0</h3>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon-wrap bg-green"><i data-lucide="shield-check"></i></div>
+        <div class="stat-data">
+          <span class="stat-label" data-i18n="stat_active_channels">Active Social Channels</span>
+          <h3 id="dbStatActiveChannels" class="stat-value">0</h3>
+        </div>
+      </div>
+    </div>
+
+    <!-- Two Column Dashboard Layout: Upcoming Queue & Recent History -->
+    <div class="dashboard-split-grid">
+      <!-- Upcoming 5-7 Days Scheduled Posts -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <i data-lucide="calendar-clock" class="icon-accent"></i>
+            <h3 data-i18n="db_upcoming_posts">Upcoming Scheduled Posts (Next 7 Days)</h3>
+          </div>
+        </div>
+        <div id="dbUpcomingList" class="history-list">
+          <p class="empty-state" data-i18n="empty_no_upcoming">No upcoming scheduled posts.</p>
+        </div>
+      </div>
+
+      <!-- Recent Posts History -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <i data-lucide="history" class="icon-accent"></i>
+            <h3 data-i18n="db_recent_activity">Recent Posts Activity</h3>
+          </div>
+        </div>
+        <div id="dbRecentList" class="history-list">
+          <p class="empty-state" data-i18n="empty_no_posts">No posts published yet.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= VIEW 3: NEW POST COMPOSER ================= -->
+  <section id="composer-view" class="view-section hidden main-layout">
+    <!-- Left Column: Composer Form -->
+    <div class="composer-column">
+      
+      <!-- Target Accounts Selector -->
+      <section class="card accounts-card">
+        <div class="card-header flex-between-resp">
+          <div class="card-title">
+            <i data-lucide="users" class="icon-accent"></i>
+            <h3 data-i18n="composer_select_accounts">Select Target Accounts</h3>
+          </div>
+          <div class="header-actions">
+            <span class="sub-badge" id="selectedCount">0 selected</span>
+            <button id="openConnectModalBtn" class="btn-sm-connect">
+              <i data-lucide="plus"></i> <span data-i18n="btn_connect_account">+ Connect</span>
+            </button>
+          </div>
+        </div>
+        <div id="accountsList" class="accounts-grid">
+          <div class="loading-spinner">Loading accounts...</div>
+        </div>
+      </section>
+
+      <!-- Post Text & Media Composer -->
+      <section class="card composer-card">
+        <div class="card-header flex-between-resp">
+          <div class="card-title">
+            <i data-lucide="edit-3" class="icon-accent"></i>
+            <h3 data-i18n="composer_title">Post Composer</h3>
+          </div>
+          <button id="openAiModalBtn" class="btn-ai-trigger">
+            <i data-lucide="sparkles"></i> <span data-i18n="btn_ai_assistant">AI Assistant</span>
+          </button>
+        </div>
+
+        <div class="composer-body">
+          <textarea 
+            id="postContent" 
+            placeholder="Write your thought, announcement, or update here... It will publish across all selected networks! 🚀" 
+            rows="5"
+          ></textarea>
+
+          <div class="composer-toolbar">
+            <div class="char-counter">
+              <span id="charCount">0</span> <span data-i18n="label_chars">characters</span>
+            </div>
+            <div class="quick-tones">
+              <span class="tone-label" data-i18n="label_ai_tone">AI Quick Tone:</span>
+              <button class="tone-btn" data-tone="professional">💼 Professional</button>
+              <button class="tone-btn" data-tone="viral">🔥 Viral Hook</button>
+              <button class="tone-btn" data-tone="inspirational">✨ Inspiring</button>
+            </div>
+          </div>
+
+          <!-- Media Upload Section -->
+          <div class="media-upload-container">
+            <label class="media-label">
+              <i data-lucide="image"></i> <span data-i18n="label_media_attachment">Media Attachment (Image / Video):</span>
+            </label>
+
+            <div class="media-inputs-row">
+              <input 
+                type="url" 
+                id="mediaUrl" 
+                placeholder="Paste public image URL or select a file..."
+              />
+              <label for="mediaFileInput" class="btn-file-upload">
+                <i data-lucide="upload"></i> <span data-i18n="btn_upload_file">Upload</span>
+                <input type="file" id="mediaFileInput" accept="image/*,video/*" hidden />
+              </label>
+            </div>
+
+            <!-- Quick Samples -->
+            <div class="quick-samples mt-2">
+              <span class="samples-label" data-i18n="label_quick_samples">Quick Samples:</span>
+              <button class="sample-chip" data-url="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1080&auto=format&fit=crop&q=80">
+                🎨 3D Abstract
+              </button>
+              <button class="sample-chip" data-url="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1080&auto=format&fit=crop&q=80">
+                📈 Growth Graph
+              </button>
+              <button class="sample-chip clear-sample" id="clearImage">
+                ✕ <span data-i18n="btn_clear_media">Clear</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Schedule vs Post Now Toggle -->
+          <div class="schedule-section">
+            <div class="schedule-toggle-row">
+              <label class="switch">
+                <input type="checkbox" id="scheduleToggle">
+                <span class="slider round"></span>
+              </label>
+              <label for="scheduleToggle" class="schedule-label">
+                <i data-lucide="calendar"></i> <span data-i18n="label_schedule_toggle">Schedule for later (Queue post)</span>
+              </label>
+            </div>
+            
+            <div id="scheduleTimePicker" class="schedule-picker hidden">
+              <label data-i18n="label_select_datetime">Select Schedule Date & Time:</label>
+              <input type="datetime-local" id="scheduleDateTime" />
+            </div>
+          </div>
+        </div>
+
+        <div class="composer-footer">
+          <button id="publishBtn" class="btn btn-primary">
+            <i data-lucide="send"></i>
+            <span id="publishBtnText" data-i18n="btn_publish_now">Publish Now (To All Accounts)</span>
+          </button>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- Right Column: Real-Time Multi-Platform Previews -->
+    <div class="preview-column">
+      <div class="card preview-card">
+        <div class="card-header">
+          <div class="card-title">
+            <i data-lucide="eye" class="icon-accent"></i>
+            <h3 data-i18n="preview_title">Live Social Previews</h3>
+          </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="platform-tabs scrollable-tabs">
+          <button class="tab-btn active" data-platform="linkedin">
+            <span class="social-logo social-logo-linkedin social-logo-small">in</span> LinkedIn
+          </button>
+          <button class="tab-btn" data-platform="instagram">
+            <span class="social-logo social-logo-instagram">◎</span> Instagram
+          </button>
+          <button class="tab-btn" data-platform="facebook">
+            <span class="social-logo social-logo-facebook">f</span> Facebook
+          </button>
+          <button class="tab-btn" data-platform="twitter">
+            <i data-lucide="twitter"></i> X (Twitter)
+          </button>
+        </div>
+
+        <!-- Frames -->
+        <div class="preview-display">
+          
+          <!-- LinkedIn -->
+          <div id="preview-linkedin" class="mockup-frame mockup-linkedin active">
+            <div class="mockup-header">
+              <div class="mockup-avatar li-avatar"></div>
+              <div class="mockup-author-meta">
+                <span class="mockup-name">EkPost Official</span>
+                <span class="mockup-sub">12,450 followers • Just now • 🌐</span>
+              </div>
+            </div>
+            <div class="mockup-text" id="liPreviewText">Your post preview will appear here...</div>
+            <div class="mockup-image-container hidden" id="liImagePreview">
+              <img src="" alt="LinkedIn Post" />
+            </div>
+            <div class="mockup-social-bar li-actions">
+              <span>👍 Like</span>
+              <span>💬 Comment</span>
+              <span>🔄 Repost</span>
+              <span>🚀 Send</span>
+            </div>
+          </div>
+
+          <!-- Instagram -->
+          <div id="preview-instagram" class="mockup-frame mockup-instagram">
+            <div class="mockup-header">
+              <div class="mockup-avatar ig-avatar"></div>
+              <span class="mockup-name">ekpost_app</span>
+              <span class="ig-dots">•••</span>
+            </div>
+            <div class="mockup-image-container ig-main-img" id="igImagePreview">
+              <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1080&auto=format&fit=crop&q=80" alt="IG Post" />
+            </div>
+            <div class="mockup-social-bar ig-icons">
+              <div class="ig-left-icons">
+                <i data-lucide="heart"></i>
+                <i data-lucide="message-circle"></i>
+                <i data-lucide="send"></i>
+              </div>
+              <i data-lucide="bookmark"></i>
+            </div>
+            <div class="ig-caption-row">
+              <span class="mockup-name">ekpost_app</span>
+              <span class="mockup-text" id="igPreviewText">Your post preview will appear here...</span>
+            </div>
+          </div>
+
+          <!-- Facebook -->
+          <div id="preview-facebook" class="mockup-frame mockup-facebook">
+            <div class="mockup-header">
+              <div class="mockup-avatar fb-avatar"></div>
+              <div class="mockup-author-meta">
+                <span class="mockup-name">EkPost Technologies</span>
+                <span class="mockup-sub">Just now • 🌐 Public</span>
+              </div>
+            </div>
+            <div class="mockup-text" id="fbPreviewText">Your post preview will appear here...</div>
+            <div class="mockup-image-container hidden" id="fbImagePreview">
+              <img src="" alt="FB Image" />
+            </div>
+            <div class="mockup-social-bar fb-actions">
+              <span>👍 Like</span>
+              <span>💬 Comment</span>
+              <span>↗ Share</span>
+            </div>
+          </div>
+
+          <!-- Twitter / X -->
+          <div id="preview-twitter" class="mockup-frame mockup-twitter">
+            <div class="mockup-header">
+              <div class="mockup-avatar tw-avatar"></div>
+              <div class="mockup-author-meta">
+                <span class="mockup-name">EkPost <i data-lucide="badge-check" class="verified-icon"></i></span>
+                <span class="mockup-sub">@EkPostApp · Just now</span>
+              </div>
+            </div>
+            <div class="mockup-text" id="twPreviewText">Your post preview will appear here...</div>
+            <div class="mockup-image-container hidden" id="twImagePreview">
+              <img src="" alt="X Image" />
+            </div>
+            <div class="mockup-social-bar tw-actions">
+              <i data-lucide="message-square"></i>
+              <i data-lucide="repeat"></i>
+              <i data-lucide="heart"></i>
+              <i data-lucide="bar-chart-2"></i>
+              <i data-lucide="share"></i>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= VIEW 4: POSTS HISTORY & CALENDAR VIEW ================= -->
+  <section id="history-view" class="view-section hidden container-padded">
+    <div class="section-title-box flex-between-resp">
+      <div>
+        <h2 data-i18n="history_title">📅 Posts History & Scheduling Calendar</h2>
+        <p data-i18n="history_subtitle">Manage, filter, and track all your published and queued social content</p>
+      </div>
+      <!-- View Mode Switcher -->
+      <div class="filter-group mt-mobile">
+        <button class="btn-toggle active" id="btnViewListMode">
+          <i data-lucide="list"></i> <span data-i18n="btn_list_view">Table/List View</span>
+        </button>
+        <button class="btn-toggle" id="btnViewCalendarMode">
+          <i data-lucide="calendar"></i> <span data-i18n="btn_calendar_view">Calendar View</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Filters Bar -->
+    <div class="filters-card card mb-3">
+      <div class="filters-row">
+        <div class="filter-item">
+          <label data-i18n="filter_status">Status:</label>
+          <select id="filterStatusSelect">
+            <option value="ALL">All Statuses</option>
+            <option value="PUBLISHED">Published</option>
+            <option value="SCHEDULED">Scheduled</option>
+            <option value="FAILED">Failed</option>
+          </select>
+        </div>
+
+        <div class="filter-item">
+          <label data-i18n="filter_platform">Platform:</label>
+          <select id="filterPlatformSelect">
+            <option value="ALL">All Platforms</option>
+            <option value="LINKEDIN">LinkedIn</option>
+            <option value="FACEBOOK">Facebook</option>
+            <option value="INSTAGRAM">Instagram</option>
+            <option value="TWITTER">X (Twitter)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Container 1: Detailed List View -->
+    <div id="postsListContainer">
+      <div id="postsHistoryList" class="history-cards-grid">
+        <p class="empty-state">Loading posts...</p>
+      </div>
+    </div>
+
+    <!-- Container 2: Visual Calendar View -->
+    <div id="postsCalendarContainer" class="hidden">
+      <div class="card calendar-card">
+        <div class="calendar-header">
+          <h3 id="currentMonthYearLabel">September 2026</h3>
+        </div>
+        <div class="calendar-grid-responsive-wrap">
+          <div class="calendar-grid" id="calendarDaysGrid">
+            <!-- Calendar Days Injected via JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= VIEW 5: SETTINGS PAGE ================= -->
+  <section id="settings-view" class="view-section hidden container-padded">
+    <div class="section-title-box">
+      <h2 data-i18n="settings_title">⚙️ Settings & Account Management</h2>
+      <p data-i18n="settings_subtitle">Profile, connected social accounts, team permissions, and subscription plans</p>
+    </div>
+
+    <div class="settings-grid">
+      <!-- 1. Profile Settings -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <i data-lucide="user" class="icon-accent"></i>
+            <h3 data-i18n="settings_profile">Profile Settings</h3>
+          </div>
+        </div>
+        <form id="profileSettingsForm">
+          <div class="form-group">
+            <label data-i18n="label_name">Full Name:</label>
+            <input type="text" id="settingProfileName" placeholder="Rohan Sharma" required />
+          </div>
+          <div class="form-group">
+            <label data-i18n="label_email">Email Address:</label>
+            <input type="email" id="settingProfileEmail" placeholder="rohan@ekpost.com" required />
+          </div>
+          <button type="submit" class="btn btn-primary mt-2">
+            <span data-i18n="btn_save_profile">Save Profile Changes</span>
+          </button>
+        </form>
+      </div>
+
+      <!-- 2. Connected Accounts Management -->
+      <div class="card">
+        <div class="card-header flex-between-resp">
+          <div class="card-title">
+            <i data-lucide="share-2" class="icon-accent"></i>
+            <h3 data-i18n="settings_social_accounts">Connected Social Accounts</h3>
+          </div>
+          <button class="btn-sm-connect" onclick="document.getElementById('connectAccountModal').classList.remove('hidden')">
+            <span data-i18n="btn_connect_new">+ Connect New</span>
+          </button>
+        </div>
+        <div id="settingsAccountsList" class="settings-accounts-list">
+          <!-- Injected via JS with Disconnect buttons -->
+        </div>
+      </div>
+
+      <!-- 3. Team Members -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <i data-lucide="users" class="icon-accent"></i>
+            <h3 data-i18n="settings_team">Team Members & Roles</h3>
+          </div>
+        </div>
+        <div class="team-list">
+          <div class="team-member-row">
+            <div class="member-meta">
+              <span class="member-name">Admin (You)</span>
+              <span class="member-email">Owner & Creator</span>
+            </div>
+            <span class="role-badge role-admin">Admin</span>
+          </div>
+          <div class="team-member-row">
+            <div class="member-meta">
+              <span class="member-name">Content Editor</span>
+              <span class="member-email">editor@ekpost.com</span>
+            </div>
+            <span class="role-badge role-editor">Editor</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. Billing & Current Plan -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <i data-lucide="credit-card" class="icon-accent"></i>
+            <h3 data-i18n="settings_billing">Current Subscription Plan</h3>
+          </div>
+        </div>
+        <div class="current-plan-box">
+          <div class="plan-header">
+            <h4>Creator Pro Plan 🔥</h4>
+            <span class="plan-price">₹799 / mo</span>
+          </div>
+          <p class="plan-desc" data-i18n="plan_pro_desc">Unlimited scheduling, 10 Social Accounts & AI Assistant active.</p>
+          <button class="btn btn-primary mt-3" onclick="document.querySelector('[data-view=landing-view]').click()">
+            <span data-i18n="btn_manage_billing">Manage Billing & Upgrade</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= MOBILE BOTTOM NAVIGATION BAR ================= -->
+  <div class="mobile-bottom-nav">
+    <button class="m-nav-tab active" data-view="landing-view">
+      <i data-lucide="home"></i>
+      <span>Home</span>
+    </button>
+    <button class="m-nav-tab" data-view="dashboard-view">
+      <i data-lucide="layout-dashboard"></i>
+      <span>Dashboard</span>
+    </button>
+    <button class="m-nav-tab m-nav-post-cta" data-view="composer-view">
+      <div class="m-post-circle">
+        <i data-lucide="plus"></i>
+      </div>
+      <span>New Post</span>
+    </button>
+    <button class="m-nav-tab" data-view="history-view">
+      <i data-lucide="calendar"></i>
+      <span>Calendar</span>
+    </button>
+    <button class="m-nav-tab" data-view="settings-view">
+      <i data-lucide="settings"></i>
+      <span>Settings</span>
+    </button>
+  </div>
+
+  <!-- ================= ONBOARDING WELCOME MODAL ================= -->
+  <div id="onboardingModal" class="modal-overlay hidden">
+    <div class="modal-card onboarding-card text-center">
+      <div class="onboarding-icon">🎉</div>
+      <h2 data-i18n="ob_welcome_title">Welcome to EkPost!</h2>
+      <p class="mb-3" data-i18n="ob_welcome_sub">Let's connect your first social accounts to publish everywhere seamlessly.</p>
+      
+      <div class="onboarding-steps-list">
+        <div class="ob-step">
+          <span class="step-num">1</span>
+          <span data-i18n="ob_step_1">Connect LinkedIn, Meta (FB/IG), or X.</span>
+        </div>
+        <div class="ob-step">
+          <span class="step-num">2</span>
+          <span data-i18n="ob_step_2">Compose your post or generate captions with AI.</span>
+        </div>
+        <div class="ob-step">
+          <span class="step-num">3</span>
+          <span data-i18n="ob_step_3">Publish everywhere in one click!</span>
+        </div>
+      </div>
+
+      <button id="btnStartOnboardingConnect" class="btn btn-primary mt-3">
+        🚀 <span data-i18n="btn_start_connecting">Connect Accounts Now</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ================= ULTRA-ATTRACTIVE AUTH MODAL ================= -->
+  <div id="authModal" class="modal-overlay hidden">
+    <div class="auth-card-modern">
+      <!-- Close Button -->
+      <button id="closeAuthModalBtn" class="auth-close-btn" title="Close">✕</button>
+
+      <!-- Visual Header Banner with Gradient Glow -->
+      <div class="auth-card-hero">
+        <div class="auth-brand-badge">
+          <div class="auth-badge-icon"><i data-lucide="send"></i></div>
+          <span class="auth-badge-name">EkPost SaaS</span>
+        </div>
+        <h2 id="authModalHeaderTitle" class="auth-headline">Welcome Back! 👋</h2>
+        <p id="authModalHeaderSub" class="auth-subline">Sign in to manage and schedule all your social content seamlessly.</p>
+      </div>
+
+      <!-- Segmented Tab Switcher -->
+      <div class="auth-segmented-tabs">
+        <button id="loginTabBtn" class="auth-seg-tab active" data-i18n="tab_login">
+          <i data-lucide="log-in"></i> Sign In
+        </button>
+        <button id="signupTabBtn" class="auth-seg-tab" data-i18n="tab_signup">
+          <i data-lucide="user-plus"></i> Create Account
+        </button>
+      </div>
+
+      <div class="auth-card-body">
+        <!-- Quick Social Logins (Google, LinkedIn) -->
+        <div class="social-login-grid">
+          <button type="button" class="btn-social-auth" onclick="quickSocialAuth('Google')">
+            <svg class="social-svg-icon" viewBox="0 0 24 24">
+              <path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.7l3.1-3.1C17.3 1.8 14.8 1 12 1 7.4 1 3.5 3.6 1.6 7.4l3.7 2.9C6.2 7.3 8.9 5 12 5z"/>
+              <path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5c-.3 1.5-1.1 2.8-2.4 3.7l3.7 2.9c2.2-2 3.7-5 3.7-8.8z"/>
+              <path fill="#FBBC05" d="M5.3 14.7c-.2-.7-.4-1.5-.4-2.7s.1-2 .4-2.7L1.6 6.4C.6 8.3 0 10.1 0 12s.6 3.7 1.6 5.6l3.7-2.9z"/>
+              <path fill="#34A853" d="M12 23c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3.1 0-5.8-2.3-6.7-5.3L1.6 15.9C3.5 19.7 7.4 23 12 23z"/>
+            </svg>
+            <span>Google</span>
+          </button>
+          
+          <button type="button" class="btn-social-auth" onclick="quickSocialAuth('LinkedIn')">
+            <span class="social-logo social-logo-linkedin social-logo-small" style="margin-right: 6px;">in</span>
+            <span>LinkedIn</span>
+          </button>
+        </div>
+
+        <div class="auth-divider">
+          <span>or continue with email</span>
+        </div>
+
+        <!-- Main Form -->
+        <form id="authForm" novalidate>
+          <!-- Full Name (Only for Signup) -->
+          <div id="nameFieldGroup" class="form-group-modern hidden">
+            <label data-i18n="label_full_name">Full Name</label>
+            <div class="input-icon-wrap">
+              <i data-lucide="user" class="input-lead-icon"></i>
+              <input type="text" id="authName" placeholder="e.g. Rohan Sharma" autocomplete="name" />
+            </div>
+          </div>
+
+          <!-- Email Address or Username -->
+          <div class="form-group-modern">
+            <label id="authEmailLabel" data-i18n="label_email">Email Address or Username</label>
+            <div class="input-icon-wrap">
+              <i data-lucide="mail" class="input-lead-icon"></i>
+              <input type="text" id="authEmail" placeholder="name@company.com or username" required autocomplete="username" />
+            </div>
+          </div>
+
+          <!-- Password -->
+          <div class="form-group-modern">
+            <div class="label-row-modern">
+              <label data-i18n="label_password">Password</label>
+              <a href="javascript:void(0)" id="forgotPasswordLink" class="forgot-link">Forgot?</a>
+            </div>
+            <div class="input-icon-wrap">
+              <i data-lucide="lock" class="input-lead-icon"></i>
+              <input type="password" id="authPassword" placeholder="••••••••" required autocomplete="current-password" />
+              <button type="button" class="btn-eye-toggle" id="togglePasswordBtn" title="Show/Hide Password">
+                <i data-lucide="eye" id="togglePasswordIcon"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Confirm Password (Only for Signup) -->
+          <div id="confirmPasswordFieldGroup" class="form-group-modern hidden">
+            <label>Confirm Password</label>
+            <div class="input-icon-wrap">
+              <i data-lucide="shield-check" class="input-lead-icon"></i>
+              <input type="password" id="authConfirmPassword" placeholder="••••••••" autocomplete="new-password" />
+              <button type="button" class="btn-eye-toggle" id="toggleConfirmPasswordBtn" title="Show/Hide Confirm Password">
+                <i data-lucide="eye" id="toggleConfirmPasswordIcon"></i>
+              </button>
+            </div>
+            <!-- Live Password Match Status Message -->
+            <div id="passwordMatchIndicator" class="password-match-msg hidden">
+              <span id="matchIcon">✕</span> <span id="matchText">Passwords do not match</span>
+            </div>
+          </div>
+
+          <!-- Terms & Remember checkbox -->
+          <div class="form-terms-row">
+            <label class="custom-checkbox-label">
+              <input type="checkbox" id="authRememberMe" checked />
+              <span class="chk-custom"></span>
+              <span id="termsText" class="chk-label-text">Remember this device for 30 days</span>
+            </label>
+          </div>
+
+          <!-- Primary Submit Button -->
+          <button type="submit" id="authSubmitBtn" class="btn btn-auth-submit">
+            <span id="authSubmitBtnText" data-i18n="btn_auth_submit">Sign In to Dashboard 🚀</span>
+          </button>
+        </form>
+
+        <!-- Bottom Toggle Prompt -->
+        <div class="auth-bottom-footer">
+          <span id="authFooterPrompt">Don't have an account yet?</span>
+          <a href="javascript:void(0)" id="authFooterSwitchBtn" class="auth-switch-link">Create one for free</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= CONNECT REAL SOCIAL ACCOUNT MODAL ================= -->
+  <div id="connectAccountModal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">
+          <i data-lucide="link" class="text-indigo-400"></i>
+          <h3 data-i18n="connect_modal_title">Connect Social Media Account</h3>
+        </div>
+        <button id="closeConnectModalBtn" class="btn-close">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Direct OAuth Buttons -->
+        <h4 class="sub-heading" data-i18n="connect_option_1">Option 1: Direct One-Click OAuth Login</h4>
+        <div class="oauth-buttons-row">
+          <button type="button" onclick="connectLinkedIn()" class="oauth-btn oauth-linkedin" style="width: 100%; justify-content: center; cursor: pointer; margin-bottom: 8px;">
+            <span class="social-logo social-logo-linkedin social-logo-small">in</span> Connect LinkedIn Account
+          </button>
+          <button type="button" onclick="connectTwitter()" class="oauth-btn oauth-twitter" style="width: 100%; justify-content: center; cursor: pointer; margin-bottom: 8px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="margin-right: 6px;"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg> Connect X (Twitter) Account
+          </button>
+          <button type="button" onclick="connectFacebook()" class="oauth-btn oauth-meta" style="width: 100%; justify-content: center; cursor: pointer; margin-bottom: 8px;">
+            <span class="social-logo social-logo-facebook" style="margin-right: 6px;"></span> Connect Facebook Page
+          </button>
+          <button type="button" onclick="connectInstagram()" class="oauth-btn oauth-meta" style="width: 100%; justify-content: center; cursor: pointer;">
+            <span class="social-logo social-logo-instagram" style="margin-right: 6px;"></span> Connect Instagram via Meta
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= AI ASSISTANT MODAL ================= -->
+  <div id="aiModal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">
+          <i data-lucide="sparkles" class="text-indigo-400"></i>
+          <h3 data-i18n="ai_modal_title">EkPost AI Assistant</h3>
+        </div>
+        <button id="closeAiModalBtn" class="btn-close">✕</button>
+      </div>
+      
+      <div class="modal-body">
+        <label data-i18n="ai_topic_label">Enter Topic or Thought:</label>
+        <input type="text" id="aiPromptInput" placeholder="e.g. 5 tips for growing a business in 2026" />
+        
+        <div class="ai-tone-selector">
+          <label data-i18n="ai_tone_label">Select Tone:</label>
+          <select id="aiToneSelect">
+            <option value="professional">💼 Professional & Insightful</option>
+            <option value="viral">🔥 Viral Hook</option>
+            <option value="inspirational">✨ Inspiring & Motivational</option>
+          </select>
+        </div>
+
+        <button id="generateAiBtn" class="btn btn-primary mt-3">
+          <i data-lucide="zap"></i> <span data-i18n="btn_generate_ai">Generate Multi-Platform Captions</span>
+        </button>
+
+        <div id="aiResultsArea" class="ai-results hidden">
+          <h4 data-i18n="ai_variations_title">Generated Variations:</h4>
+          
+          <div class="ai-tab-box">
+            <div class="ai-box-title">💼 LinkedIn Version:</div>
+            <pre id="aiLiResult" class="ai-text-box"></pre>
+            <button class="btn-insert-ai" data-target="aiLiResult" data-i18n="btn_use_caption">Use (Insert to Composer)</button>
+          </div>
+
+          <div class="ai-tab-box">
+            <div class="ai-box-title">⚡ Twitter/X Version:</div>
+            <pre id="aiTwResult" class="ai-text-box"></pre>
+            <button class="btn-insert-ai" data-target="aiTwResult" data-i18n="btn_use_caption">Use (Insert to Composer)</button>
+          </div>
+
+          <div class="ai-tab-box">
+            <div class="ai-box-title">✨ Instagram Version:</div>
+            <pre id="aiIgResult" class="ai-text-box"></pre>
+            <button class="btn-insert-ai" data-target="aiIgResult" data-i18n="btn_use_caption">Use (Insert to Composer)</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

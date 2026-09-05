@@ -1,0 +1,33 @@
+{
+  "name": "ekpost",
+  "version": "1.0.0",
+  "description": "EkPost - Multi-Platform Social Media Management & Scheduling Engine",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js"
+  },
+  "keywords": [
+    "social-media",
+    "scheduler",
+    "linkedin",
+    "meta",
+    "instagram",
+    "facebook",
+    "twitter",
+    "ekpost"
+  ],
+  "author": "EkPost Team",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.7.9",
+    "bcryptjs": "^3.0.3",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.3",
+    "multer": "^1.4.5-lts.1"
+  }
+}

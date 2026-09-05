@@ -1,0 +1,42 @@
+[
+  {
+    "id": "user_default_admin",
+    "name": "Demo Creator",
+    "email": "admin@ekpost.com",
+    "username": "admin",
+    "passwordHash": "$2b$10$gWcoZuIYWTkT5S2Uqmp5a.vMge3jic77eqwKofGf6jHG.9kGPu2a6",
+    "createdAt": "2026-09-03T12:23:25.458Z"
+  },
+  {
+    "id": "user_1788438505279",
+    "name": "Shubham Test",
+    "email": "shubham_unique@ekpost.com",
+    "username": "shubham_unique@ekpost.com",
+    "passwordHash": "$2b$10$o8gX1p8YlHNhnny3ofIXteyXR9MeKKJAnGYjJiwSk0p6MW4ysL6cm",
+    "createdAt": "2026-09-03T12:28:25.279Z"
+  },
+  {
+    "id": "user_1788440173402",
+    "name": "Shubham",
+    "email": "maparishubham5@gmail.com",
+    "username": "maparishubham5",
+    "passwordHash": "$2b$10$rhwICiwqkQgoklLEPl4/2uPL4GIwgO5Jg1lmi2HN4Q3zD1vBbxYTO",
+    "createdAt": "2026-09-03T12:56:13.402Z"
+  },
+  {
+    "id": "user_1788582136120",
+    "name": "Shubham Mapari",
+    "email": "maparishubham23@gmail.com",
+    "username": "maparishubham23",
+    "passwordHash": "$2b$10$ihVEuQ9pH9yYf8o4gTEw1.Mz9aPLqJUat8b/KpsKDI8GvMeckPi3.",
+    "createdAt": "2026-09-05T04:22:16.120Z"
+  },
+  {
+    "id": "user_1788584129304",
+    "name": "Mapari",
+    "email": "mapari@gmail.com",
+    "username": "mapari",
+    "passwordHash": "$2b$10$o4Q93ee0BLrPRrAPJC.AROV.Y4sDXv3bxB.5Tgm43Tgs7cApYjek.",
+    "createdAt": "2026-09-05T04:55:29.304Z"
+  }
+]

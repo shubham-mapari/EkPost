@@ -1,0 +1,91 @@
+// EkPost PostgreSQL Prisma Schema
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Platform {
+  LINKEDIN
+  FACEBOOK_PAGE
+  INSTAGRAM
+  TWITTER
+  YOUTUBE
+  TIKTOK
+}
+
+enum PostStatus {
+  DRAFT
+  SCHEDULED
+  PUBLISHING
+  PUBLISHED
+  PARTIALLY_FAILED
+  FAILED
+}
+
+enum PublishLogStatus {
+  SUCCESS
+  FAILED
+  PENDING
+}
+
+model User {
+  id            String          @id @default(uuid())
+  email         String          @unique
+  name          String?
+  passwordHash  String?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  accounts      SocialAccount[]
+  posts         Post[]
+}
+
+model SocialAccount {
+  id             String          @id @default(uuid())
+  userId         String
+  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  platform       Platform
+  accountName    String          // e.g. "Acme Corp Page" or "John Doe"
+  platformUserId String          // e.g. URN or Facebook Page ID
+  encryptedToken String          // Encrypted with AES-256-GCM
+  tokenExpiresAt DateTime?
+  metadata       Json?           // Extra info (e.g., avatar URL, page category)
+  isActive       Boolean         @default(true)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  logs           PostPublishLog[]
+
+  @@unique([userId, platform, platformUserId])
+}
+
+model Post {
+  id            String           @id @default(uuid())
+  userId        String
+  user          User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  content       String           // Universal post text/commentary
+  mediaUrl      String?          // S3/R2 Public image or video URL
+  mediaType     String?          // IMAGE, VIDEO, CAROUSEL
+  status        PostStatus       @default(DRAFT)
+  scheduledAt   DateTime?
+  publishedAt   DateTime?
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  publishLogs   PostPublishLog[]
+}
+
+model PostPublishLog {
+  id              String           @id @default(uuid())
+  postId          String
+  post            Post             @relation(fields: [postId], references: [id], onDelete: Cascade)
+  socialAccountId String
+  socialAccount   SocialAccount    @relation(fields: [socialAccountId], references: [id], onDelete: Cascade)
+  platform        Platform
+  status          PublishLogStatus @default(PENDING)
+  platformPostId  String?          // URN or Post ID returned by the platform
+  platformPostUrl String?
+  errorMessage    String?
+  executedAt      DateTime         @default(now())
+}
