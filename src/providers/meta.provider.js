@@ -90,16 +90,37 @@ export class MetaProvider {
     const longLivedToken = longLivedRes.data.access_token;
 
     // 3. Fetch User's Facebook Pages & Instagram Accounts
-    const accountsRes = await axios.get(`https://graph.facebook.com/${config.meta.graphVersion}/me/accounts`, {
-      params: {
-        fields: 'id,name,access_token,instagram_business_account{id,username,profile_picture_url}',
-        access_token: longLivedToken
-      }
-    });
+    let accounts = [];
+    try {
+      const accountsRes = await axios.get(`https://graph.facebook.com/${config.meta.graphVersion}/me/accounts`, {
+        params: {
+          fields: 'id,name,access_token,instagram_business_account{id,username,profile_picture_url}',
+          access_token: longLivedToken
+        }
+      });
+      accounts = accountsRes.data.data || [];
+    } catch (accErr) {
+      console.warn('[Meta] Could not fetch /me/accounts:', accErr.message);
+    }
+
+    // 4. Fetch User's Personal Facebook Profile (Fallback & Name)
+    let userProfile = null;
+    try {
+      const userRes = await axios.get(`https://graph.facebook.com/${config.meta.graphVersion}/me`, {
+        params: {
+          fields: 'id,name,picture',
+          access_token: longLivedToken
+        }
+      });
+      userProfile = userRes.data || null;
+    } catch (uErr) {
+      console.warn('[Meta] Could not fetch /me user profile:', uErr.message);
+    }
 
     return {
       accessToken: longLivedToken,
-      accounts: accountsRes.data.data
+      accounts: accounts,
+      user: userProfile
     };
   }
 

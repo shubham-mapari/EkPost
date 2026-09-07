@@ -490,6 +490,21 @@ const handleMetaCallback = async (req, res) => {
           accountsAdded.push(igAccount);
         }
       }
+
+      // If user has no Facebook Pages created, connect their Facebook Profile
+      if (accountsAdded.length === 0 && metaData.user) {
+        const fbAccount = AccountStore.addAccount({
+          userId,
+          platform: 'facebook',
+          name: `${metaData.user.name} (Facebook)`,
+          platformUserId: metaData.user.id,
+          token: metaData.accessToken,
+          avatar: metaData.user.picture?.data?.url || `https://graph.facebook.com/${metaData.user.id}/picture?type=normal`,
+          expiresAt: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString(),
+          authFlow: 'facebook_login'
+        });
+        accountsAdded.push(fbAccount);
+      }
     }
 
     return res.redirect('/?connected=meta');
