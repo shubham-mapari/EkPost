@@ -21,10 +21,10 @@ function userContext(req, res, next) {
       const decoded = jwt.verify(token, config.jwtSecret);
       req.user = decoded;
     } catch (e) {
-      req.user = { id: 'user_default_admin', name: 'Demo Creator', email: 'admin@ekpost.com' };
+      req.user = null;
     }
   } else {
-    req.user = { id: 'user_default_admin', name: 'Demo Creator', email: 'admin@ekpost.com' };
+    req.user = null;
   }
   next();
 }

@@ -30,7 +30,7 @@ function extractUserFromReq(req) {
       return jwt.verify(req.query.token, config.jwtSecret);
     } catch (_) {}
   }
-  return { id: 'user_default_admin', name: 'Demo Creator', email: 'admin@ekpost.com' };
+  return null;
 }
 
 import { OTPService } from '../services/otp.service.js';

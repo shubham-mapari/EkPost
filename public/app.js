@@ -21,7 +21,7 @@ const translations = {
     hero_pill: '✨ The Ultimate Social Media Management Tool for Creators & Businesses',
     hero_title_1: 'One Post,',
     hero_title_2: 'Everywhere.',
-    hero_subtitle: 'Write your content in one unified composer and publish or schedule simultaneously across LinkedIn, Instagram, Facebook, X (Twitter), YouTube, and TikTok in just one click.',
+    hero_subtitle: 'Write your content in one unified composer and publish or schedule simultaneously across LinkedIn, Instagram, Facebook, and X (Twitter) in just one click.',
     btn_start_trial: 'Start Free Trial',
     btn_view_demo: 'View Live Demo',
     platforms_label: 'Supported on all major social networks:',
@@ -118,7 +118,7 @@ const translations = {
     hero_pill: '✨ क्रिएटर्स आणि बिझनेससाठी सर्वोत्कृष्ट सोशल मीडिया मॅनेजमेंट टूल',
     hero_title_1: 'एक पोस्ट,',
     hero_title_2: 'सर्व ठिकाणी.',
-    hero_subtitle: 'तुमचा विचार एकाच ठिकाणी लिहा आणि तो एका क्लिकमध्ये किंवा ऑटोमॅटिकली शेड्यूल करून LinkedIn, Instagram, Facebook, X (Twitter), YouTube आणि TikTok वर पब्लिश करा.',
+    hero_subtitle: 'तुमचा विचार एकाच ठिकाणी लिहा आणि तो एका क्लिकमध्ये किंवा ऑटोमॅटिकली शेड्यूल करून LinkedIn, Instagram, Facebook, आणि X (Twitter) वर पब्लिश करा.',
     btn_start_trial: 'मोफत चाचणी सुरू करा',
     btn_view_demo: 'लाइव्ह डेमो पहा',
     platforms_label: 'पब्लिश करा सर्व लोकप्रिय सोशल नेटवर्क्सवर:',
@@ -622,7 +622,14 @@ function setupEventListeners() {
   if (legacyPasswordForm) legacyPasswordForm.addEventListener('submit', handleLegacyPasswordLogin);
 
   // Connect Real Account Listeners
-  openConnectModalBtn.addEventListener('click', () => connectAccountModal.classList.remove('hidden'));
+  openConnectModalBtn.addEventListener('click', () => {
+    if (!currentUser) {
+      showToast('Please sign in to connect social media accounts.', 'error');
+      openAuthModal();
+      return;
+    }
+    connectAccountModal.classList.remove('hidden');
+  });
   closeConnectModalBtn.addEventListener('click', () => connectAccountModal.classList.add('hidden'));
 
   // Onboarding Start button
@@ -1227,6 +1234,11 @@ async function loadAccounts() {
 }
 
 function connectLinkedIn() {
+  if (!currentUser) {
+    showToast('Please sign in before connecting LinkedIn.', 'error');
+    openAuthModal();
+    return;
+  }
   const tokenParam = authToken ? `?token=${encodeURIComponent(authToken)}` : '';
   window.location.href = `/api/auth/linkedin${tokenParam}`;
 }
@@ -1251,6 +1263,11 @@ async function disconnectLinkedIn() {
 window.disconnectLinkedIn = disconnectLinkedIn;
 
 function connectTwitter() {
+  if (!currentUser) {
+    showToast('Please sign in before connecting X (Twitter).', 'error');
+    openAuthModal();
+    return;
+  }
   const tokenParam = authToken ? `?token=${encodeURIComponent(authToken)}` : '';
   window.location.href = `/api/auth/twitter${tokenParam}`;
 }

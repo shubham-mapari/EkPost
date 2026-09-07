@@ -1,43 +1,17 @@
 {
   "accounts": [
     {
-      "id": "acc_twitter_1788584377458",
-      "userId": "user_1788584129304",
+      "id": "acc_twitter_1788803678035",
+      "userId": "user_default_admin",
       "platform": "twitter",
       "name": "Shubham Mapari (@maparishubham23)",
       "platformUserId": "1650357067079901186",
-      "encryptedToken": "3a60b4cbc9b2deb57e93cb005cc0329b:b43747e20e246cd6f93c18c54201438f:208e9af408d6ff5cf31abcc7cf89a548939982f2d3a4ed5b5c3f3c9218a98674f787eb1f9c98bce83363672d780245e455459add77183a51714baa84d8cd7cdf1ca7d394ff7ff10196499fed0671861f8303f5565f9f7c17d340a9",
+      "encryptedToken": "f8ea2b94ff629737ee3a90399dde10ba:d42e914be91c554ffe0dcfaff0b3253b:62c23995159ca582eaeefe5e0075412376b44c3039e5bc065da9844513e240820edf4aa3d278ba70cac3ce3cf9bf3adb432152f7f78881301a998e3027f7e36f04ebea844b3ec6e8e5c3f10976d0440879edaf1aaf0de573914eb39e53771978106d1feb8672feaeb1868746a1cd33fb40cae734246f3b550425532fc6a87872f79b343e1a66ed839c896e47e4f48a67171404a449205fa2ffc9e5d3d6e556542be7b58c13e1147e48da9feae018803e347569efe4966a5309fb73618d6c8faae2bedc74dc5941b4435049628ec793479758f763a1b4ee85e72391861862dd0f1b8d919007738f5a6e4043a1313c255e886c6841a9cc3f36",
       "avatar": "https://pbs.twimg.com/profile_images/1650357157538451457/Ty6gdPfN_normal.png",
       "authFlow": null,
-      "expiresAt": "2026-09-05T06:59:37.458Z",
-      "createdAt": "2026-09-05T04:59:37.458Z",
-      "updatedAt": "2026-09-05T04:59:37.458Z"
-    },
-    {
-      "id": "acc_linkedin_1788584400121",
-      "userId": "user_1788584129304",
-      "platform": "linkedin",
-      "name": "Shubham Mapari (LinkedIn)",
-      "platformUserId": "urn:li:person:-COdeuqmcj",
-      "encryptedToken": "805047bb8bb624a3a1aad3946e51640b:135d1b3d03e46ec90a9749f0e9e5a569:471d316ce9d68312bdfb2b5ccd2630ceedbbe7f3d8d614c0c42b1b38864632b43bade0febbbbf6041fc0ad396e1fb7fda969f84d2e3a3f53b96a99df15e1a2c8e1799f2cfdf8fba86c7f698351a31ca9359b4ba2d2fedaa54ac84d32d12e7d00e54fceb91f0419fa75002adde01135b4e5b4224bcd35f631df8a9a3660aa14b6550f672ad0e2559113e2227e8f68d3a073a63a81b04d128d2c2b8d6626114a8d85c27d45dfcf2ceb288b09f15a2db49f39d4a27cbdab8f667f221f382c02ced47f3126452d6a0ad1075b8f758293c039bf1632d653d53f4f5d446ee93b85bb4127510f7f47b1176a59a36e69d595459ce05b4dc3abcd72204a0d4cbf490dc2141f91b0bcab4a864307b042bd42e1865f8b31b7771b020a8b949b9387a8f58db223062f5904b74c34c12a45c24000297cd58a1f71f01efe07fb2311be23143ab71cef7e1b68cda605c2fdab250fda9c496f9e52cecb26604826b96699c3b6",
-      "avatar": "https://media.licdn.com/dms/image/v2/D4D03AQESnMu8tRY0lw/profile-displayphoto-scale_400_400/B4DZ.9c6THIIAk-/0/1785589903581?e=1790208000&v=beta&t=odzTQ_Jm4ttbo-VE3HLOAcevDMtAieY1CwGnDWAGSUk",
-      "authFlow": null,
-      "expiresAt": "2026-11-04T04:59:59.121Z",
-      "createdAt": "2026-09-05T05:00:00.121Z",
-      "updatedAt": "2026-09-05T05:00:00.121Z"
-    },
-    {
-      "id": "acc_instagram_1788625738752",
-      "userId": "user_1788582136120",
-      "platform": "instagram",
-      "name": "@sm_patil__92",
-      "platformUserId": "17841446245878956",
-      "encryptedToken": "f8b55bbd6c07255e442d16a32375458c:49a2cf19197b36292f1dd4a7f89fbb8c:2a9dfb957672b7f1b45f376368911b86d5ffd33512c8641dbba88662c229f411ca9e926da60c91dce03ca24fdac6b8e368edc4a94db529836706538c217ae91b67ffb36af277dce0f8fbe93b86ff4e8c30b4d13e78113b9fd54a918d3190484c619c43c52731288ce9f11617c109a4983c79ea418c55f5dfdb2522755d4094280777e9324cf4fb0f2daba38098e155673060c5125a629a2ff4a3e0003b0a6a",
-      "avatar": "https://instagram.fklh3-1.fna.fbcdn.net/v/t51.82787-19/658842447_18074706884541530_1293114895743610498_n.jpg?stp=dst-jpg_s206x206_tt6&_nc_cat=109&ccb=7-5&_nc_sid=bf7eb4&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=ZINPOPnh_PIQ7kNvwHua9ju&_nc_oc=AdrWik6Qe5T9ApDLbSKsgRAAYubw5PAOkrZGZDW0YNUIRllJA6pUdN6G1wFjPAYe6KCZNm2zKGqMGspohbxvVy3P&_nc_zt=24&_nc_ht=instagram.fklh3-1.fna&edm=AP4hL3IEAAAA&_nc_gid=zoneoR-xm__EPvyoAjXP7g&_nc_tpa=Q5bMBQK7KEicUM1fOGMW8zyX9QWYz35JE2ysxBM9gB46HxvJAJQmRMWVBsJTqXSUfbbf777-RsgPB6r28g&oh=00_AQIoPAf25h_uigIh-Coebuw0G8SFU240b1TpsL9O5mfWNw&oe=6AA1FD4F",
-      "authFlow": "instagram_login",
-      "expiresAt": "2026-11-04T16:02:48.752Z",
-      "createdAt": "2026-09-05T16:28:58.752Z",
-      "updatedAt": "2026-09-05T16:28:58.752Z"
+      "expiresAt": null,
+      "createdAt": "2026-09-07T17:53:39.945Z",
+      "updatedAt": "2026-09-07T17:54:38.033Z"
     }
   ],
   "posts": [

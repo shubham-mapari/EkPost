@@ -38,8 +38,9 @@ export const db = loadStoreFromDisk();
 
 export const AccountStore = {
   getAccountsByUser(userId) {
+    if (!userId) return [];
     return db.accounts
-      .filter(acc => !acc.userId || acc.userId === userId || userId === 'user_default_admin' || acc.userId === 'user_default_admin')
+      .filter(acc => acc.userId === userId)
       .map(acc => ({
         id: acc.id,
         userId: acc.userId,
@@ -54,7 +55,8 @@ export const AccountStore = {
   },
 
   getAccountById(id, userId) {
-    const acc = db.accounts.find(a => a.id === id && (!a.userId || a.userId === userId || userId === 'user_default_admin' || a.userId === 'user_default_admin'));
+    if (!userId) return null;
+    const acc = db.accounts.find(a => a.id === id && a.userId === userId);
     if (!acc) return null;
     return {
       ...acc,
