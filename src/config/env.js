@@ -14,47 +14,52 @@ export function getLinkedInApiVersion() {
   return `${year}${month}`;
 }
 
+function cleanStr(val, fallback = '') {
+  if (val === undefined || val === null) return fallback;
+  return String(val).trim().replace(/^["']|["']$/g, '').trim();
+}
+
 export const config = {
   port: parseInt(process.env.PORT || '5000', 10),
-  nodeEnv: process.env.NODE_ENV || 'development',
-  appUrl: process.env.APP_URL || 'http://localhost:5000',
-  jwtSecret: process.env.JWT_SECRET || 'ekpost_jwt_secret_production_key_2026',
-  encryptionSecret: process.env.ENCRYPTION_SECRET_KEY || '9f8e7d6c5b4a3928170e9d8c7b6a5f4e3d2c1b0a9876543210abcdef01234567',
+  nodeEnv: cleanStr(process.env.NODE_ENV, 'development'),
+  appUrl: cleanStr(process.env.APP_URL, 'http://localhost:5000'),
+  jwtSecret: cleanStr(process.env.JWT_SECRET, 'ekpost_jwt_secret_production_key_2026'),
+  encryptionSecret: cleanStr(process.env.ENCRYPTION_SECRET_KEY, '9f8e7d6c5b4a3928170e9d8c7b6a5f4e3d2c1b0a9876543210abcdef01234567'),
   
   linkedin: {
-    clientId: process.env.LINKEDIN_CLIENT_ID || '',
-    clientSecret: process.env.LINKEDIN_CLIENT_SECRET || '',
-    redirectUri: process.env.LINKEDIN_REDIRECT_URI || 'http://localhost:5000/auth/linkedin/callback',
+    clientId: cleanStr(process.env.LINKEDIN_CLIENT_ID),
+    clientSecret: cleanStr(process.env.LINKEDIN_CLIENT_SECRET),
+    redirectUri: cleanStr(process.env.LINKEDIN_REDIRECT_URI, 'http://localhost:5000/auth/linkedin/callback'),
     apiVersion: getLinkedInApiVersion()
   },
   
   meta: {
-    appId: process.env.META_APP_ID || '',
-    appSecret: process.env.META_APP_SECRET || '',
-    redirectUri: process.env.META_REDIRECT_URI || 'http://localhost:5000/auth/meta/callback',
-    graphVersion: process.env.META_GRAPH_VERSION || 'v23.0'
+    appId: cleanStr(process.env.META_APP_ID),
+    appSecret: cleanStr(process.env.META_APP_SECRET),
+    redirectUri: cleanStr(process.env.META_REDIRECT_URI, 'http://localhost:5000/auth/meta/callback'),
+    graphVersion: cleanStr(process.env.META_GRAPH_VERSION, 'v23.0')
   },
 
   instagram: {
-    appId: process.env.INSTAGRAM_APP_ID || '',
-    appSecret: process.env.INSTAGRAM_APP_SECRET || '',
-    redirectUri: process.env.INSTAGRAM_REDIRECT_URI || 'http://localhost:5000/auth/instagram/callback'
+    appId: cleanStr(process.env.INSTAGRAM_APP_ID),
+    appSecret: cleanStr(process.env.INSTAGRAM_APP_SECRET),
+    redirectUri: cleanStr(process.env.INSTAGRAM_REDIRECT_URI, 'http://localhost:5000/auth/instagram/callback')
   },
 
   twitter: {
-    clientId: process.env.TWITTER_CLIENT_ID || '',
-    clientSecret: process.env.TWITTER_CLIENT_SECRET || '',
-    redirectUri: process.env.TWITTER_REDIRECT_URI || 'http://localhost:5000/auth/twitter/callback',
+    clientId: cleanStr(process.env.TWITTER_CLIENT_ID),
+    clientSecret: cleanStr(process.env.TWITTER_CLIENT_SECRET),
+    redirectUri: cleanStr(process.env.TWITTER_REDIRECT_URI, 'http://localhost:5000/auth/twitter/callback'),
     // OAuth 1.0a credentials (for live token-based publishing)
-    consumerKey: process.env.TWITTER_CONSUMER_KEY || '',
-    consumerSecret: process.env.TWITTER_CONSUMER_SECRET || '',
-    accessToken: process.env.TWITTER_ACCESS_TOKEN || '',
-    accessTokenSecret: process.env.TWITTER_ACCESS_TOKEN_SECRET || ''
+    consumerKey: cleanStr(process.env.TWITTER_CONSUMER_KEY),
+    consumerSecret: cleanStr(process.env.TWITTER_CONSUMER_SECRET),
+    accessToken: cleanStr(process.env.TWITTER_ACCESS_TOKEN),
+    accessTokenSecret: cleanStr(process.env.TWITTER_ACCESS_TOKEN_SECRET)
   },
 
   cloudinary: {
-    cloudName: process.env.CLOUDINARY_CLOUD_NAME || '',
-    apiKey: process.env.CLOUDINARY_API_KEY || '',
-    apiSecret: process.env.CLOUDINARY_API_SECRET || ''
+    cloudName: cleanStr(process.env.CLOUDINARY_CLOUD_NAME),
+    apiKey: cleanStr(process.env.CLOUDINARY_API_KEY),
+    apiSecret: cleanStr(process.env.CLOUDINARY_API_SECRET)
   }
 };
