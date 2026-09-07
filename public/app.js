@@ -441,17 +441,39 @@ function setupEventListeners() {
     updatePreviews(postContentInput.value, e.target.value);
   });
 
-  mediaFileInput.addEventListener('change', (e) => {
+  mediaFileInput.addEventListener('change', async (e) => {
     const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = function(evt) {
-        mediaUrlInput.value = evt.target.result;
-        updatePreviews(postContentInput.value, mediaUrlInput.value);
-        showToast('Media file loaded! 📸', 'success');
-      };
-      reader.readAsDataURL(file);
-    }
+    if (!file) return;
+
+    // Show immediate local preview while uploading
+    const reader = new FileReader();
+    reader.onload = async function(evt) {
+      const base64Data = evt.target.result;
+      updatePreviews(postContentInput.value, base64Data);
+      
+      const uploadToastMsg = currentLang === 'mr' ? 'फोटो Cloudinary वर अपलोड होत आहे... ⏳' : 'Uploading media to Cloudinary... ⏳';
+      showToast(uploadToastMsg, 'info');
+
+      try {
+        const res = await fetchWithAuth('/api/upload', {
+          method: 'POST',
+          body: JSON.stringify({ image: base64Data })
+        });
+        const data = await res.json();
+
+        if (data.success && data.url) {
+          mediaUrlInput.value = data.url;
+          updatePreviews(postContentInput.value, data.url);
+          const successMsg = currentLang === 'mr' ? 'फोटो यशस्वीरीत्या अपलोड झाला! 📸' : 'Media uploaded to Cloudinary! 📸 Ready to publish.';
+          showToast(successMsg, 'success');
+        } else {
+          showToast(`Cloud upload error: ${data.error || 'Failed to upload'}`, 'error');
+        }
+      } catch (uploadErr) {
+        showToast(`Upload failed: ${uploadErr.message}`, 'error');
+      }
+    };
+    reader.readAsDataURL(file);
   });
 
   // Quick Sample Chips

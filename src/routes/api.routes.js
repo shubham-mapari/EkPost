@@ -8,6 +8,7 @@ import { AIService } from '../services/ai.service.js';
 import { AnalyticsService } from '../services/analytics.service.js';
 import { BillingService } from '../services/billing.service.js';
 import { UserService } from '../services/user.service.js';
+import { CloudinaryService } from '../services/cloudinary.service.js';
 
 export const apiRouter = Router();
 
@@ -221,4 +222,25 @@ apiRouter.put('/profile', (req, res) => {
     return res.json({ success: true, message: 'Profile updated successfully!', user: { id: user.id, name: user.name, email: user.email } });
   }
   res.status(404).json({ success: false, error: 'User not found' });
+});
+
+// 12. Cloudinary Media Upload
+apiRouter.post('/upload', async (req, res) => {
+  const { image, folder } = req.body;
+  if (!image) {
+    return res.status(400).json({ success: false, error: 'No image data provided.' });
+  }
+
+  try {
+    const uploadResult = await CloudinaryService.uploadImage(image, folder || 'ekpost');
+    return res.json({
+      success: true,
+      url: uploadResult.url,
+      data: uploadResult
+    });
+  } catch (err) {
+    console.error('[Upload] Cloudinary upload error:', err.response?.data || err.message);
+    const errMsg = err.response?.data?.error?.message || err.message;
+    return res.status(500).json({ success: false, error: errMsg });
+  }
 });

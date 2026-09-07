@@ -50,5 +50,11 @@ export const config = {
     consumerSecret: process.env.TWITTER_CONSUMER_SECRET || '',
     accessToken: process.env.TWITTER_ACCESS_TOKEN || '',
     accessTokenSecret: process.env.TWITTER_ACCESS_TOKEN_SECRET || ''
+  },
+
+  cloudinary: {
+    cloudName: process.env.CLOUDINARY_CLOUD_NAME || '',
+    apiKey: process.env.CLOUDINARY_API_KEY || '',
+    apiSecret: process.env.CLOUDINARY_API_SECRET || ''
   }
 };
