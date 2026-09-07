@@ -494,8 +494,9 @@ const handleMetaCallback = async (req, res) => {
 
     return res.redirect('/?connected=meta');
   } catch (err) {
-    console.error('Meta OAuth callback error:', err);
-    return res.redirect(`/?error=${encodeURIComponent(err.message || 'Meta authorization failed')}`);
+    const errorDetail = err.response?.data?.error?.message || err.response?.data?.message || err.message;
+    console.error('Meta OAuth callback error:', errorDetail, err.response?.data);
+    return res.redirect(`/?error=${encodeURIComponent(errorDetail || 'Meta authorization failed')}`);
   }
 };
 
