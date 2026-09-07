@@ -61,5 +61,14 @@ export const config = {
     cloudName: cleanStr(process.env.CLOUDINARY_CLOUD_NAME),
     apiKey: cleanStr(process.env.CLOUDINARY_API_KEY),
     apiSecret: cleanStr(process.env.CLOUDINARY_API_SECRET)
+  },
+
+  email: {
+    smtpHost: cleanStr(process.env.SMTP_HOST, 'smtp.gmail.com'),
+    smtpPort: parseInt(process.env.SMTP_PORT || '465', 10),
+    smtpSecure: process.env.SMTP_SECURE ? process.env.SMTP_SECURE === 'true' : true,
+    smtpUser: cleanStr(process.env.SMTP_USER),
+    smtpPass: cleanStr(process.env.SMTP_PASS),
+    fromEmail: cleanStr(process.env.EMAIL_FROM, 'EkPost <noreply@ekpost.com>')
   }
 };

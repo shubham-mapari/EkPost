@@ -27,19 +27,6 @@
       "updatedAt": "2026-09-05T05:00:00.121Z"
     },
     {
-      "id": "acc_twitter_1788629084830",
-      "userId": "user_default_admin",
-      "platform": "twitter",
-      "name": "Shubham Mapari (@maparishubham23)",
-      "platformUserId": "1650357067079901186",
-      "encryptedToken": "cff209d1ed7a77a74039fa22e7f3ec16:56966d5b8237a839eae8db6b216d847c:69fdd0c04296cadcb7d824efddf44c2db9632dedb70fe1cfaa1607f1101dcbd06c8d35e027700a7e979f522581afac9645989e3eca39c95ceb38ce1ba38186338aa14587a82dfb9ad9be7b51a539ceed133f2f3a7bd31558e29764febdc4ce415957e67af2e1e8ab3836bedc06b0d0a03766177ec70878bfb7f34f0831146b58ea5160bac62a49b8df88b29b2449d9a22f53f0c01517bb7a94af91e8033688e5a6bc34f2dfb56b8fd43e29cf84dc056b735e5430a74882dd843c9ce905abd08db0afe5e4554c3b624d551b4b37a9f89b6729ec40f71c9056cf2d2bb418f0ae125da322a129fb73569d4b2aab1f734255ec1a126e3b814572",
-      "avatar": "https://pbs.twimg.com/profile_images/1650357157538451457/Ty6gdPfN_normal.png",
-      "authFlow": null,
-      "expiresAt": null,
-      "createdAt": "2026-09-05T05:05:21.486Z",
-      "updatedAt": "2026-09-05T17:24:44.829Z"
-    },
-    {
       "id": "acc_instagram_1788625738752",
       "userId": "user_1788582136120",
       "platform": "instagram",

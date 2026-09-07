@@ -294,30 +294,54 @@ const settingProfileEmail = document.getElementById('settingProfileEmail');
 const profileSettingsForm = document.getElementById('profileSettingsForm');
 const settingsAccountsList = document.getElementById('settingsAccountsList');
 
-// Auth Modal Elements
+// Auth Modal & OTP Step Elements
 const authModal = document.getElementById('authModal');
+const closeAuthModalBtn = document.getElementById('closeAuthModalBtn');
 const authModalHeaderTitle = document.getElementById('authModalHeaderTitle');
 const authModalHeaderSub = document.getElementById('authModalHeaderSub');
+
+// Step Panels
+const authStepEmail = document.getElementById('authStepEmail');
+const authStepOtp = document.getElementById('authStepOtp');
+const authStepName = document.getElementById('authStepName');
+const authStepPassword = document.getElementById('authStepPassword');
+
+// Step 1: Email Form
 const loginTabBtn = document.getElementById('loginTabBtn');
-const signupTabBtn = document.getElementById('signupTabBtn');
-const nameFieldGroup = document.getElementById('nameFieldGroup');
-const confirmPasswordFieldGroup = document.getElementById('confirmPasswordFieldGroup');
-const authNameInput = document.getElementById('authName');
-const authEmailInput = document.getElementById('authEmail');
-const authPasswordInput = document.getElementById('authPassword');
-const authConfirmPasswordInput = document.getElementById('authConfirmPassword');
-const passwordMatchIndicator = document.getElementById('passwordMatchIndicator');
-const matchIcon = document.getElementById('matchIcon');
-const matchText = document.getElementById('matchText');
-const authSubmitBtn = document.getElementById('authSubmitBtn');
-const authSubmitBtnText = document.getElementById('authSubmitBtnText');
-const authFooterPrompt = document.getElementById('authFooterPrompt');
-const authFooterSwitchBtn = document.getElementById('authFooterSwitchBtn');
-const termsText = document.getElementById('termsText');
-const authForm = document.getElementById('authForm');
-const closeAuthModalBtn = document.getElementById('closeAuthModalBtn');
-const togglePasswordBtn = document.getElementById('togglePasswordBtn');
-const toggleConfirmPasswordBtn = document.getElementById('toggleConfirmPasswordBtn');
+const passwordTabBtn = document.getElementById('passwordTabBtn');
+const otpEmailForm = document.getElementById('otpEmailForm');
+const otpEmailInput = document.getElementById('otpEmailInput');
+const btnSendOtp = document.getElementById('btnSendOtp');
+const btnSendOtpText = document.getElementById('btnSendOtpText');
+
+// Step 2: OTP Verification Form
+const btnBackToEmail = document.getElementById('btnBackToEmail');
+const otpRecipientEmail = document.getElementById('otpRecipientEmail');
+const otpVerifyForm = document.getElementById('otpVerifyForm');
+const otpBoxInputs = document.querySelectorAll('.otp-box-input');
+const otpDevHint = document.getElementById('otpDevHint');
+const otpDevCode = document.getElementById('otpDevCode');
+const btnResendOtp = document.getElementById('btnResendOtp');
+const resendTimerEl = document.getElementById('resendTimer');
+const btnVerifyOtpSubmit = document.getElementById('btnVerifyOtpSubmit');
+const btnVerifyOtpText = document.getElementById('btnVerifyOtpText');
+
+// Step 3: Name Completion Form
+const otpNameForm = document.getElementById('otpNameForm');
+const otpFullNameInput = document.getElementById('otpFullNameInput');
+const btnCompleteSignup = document.getElementById('btnCompleteSignup');
+
+// Step 4: Legacy Password Form
+const btnBackToOtpMode = document.getElementById('btnBackToOtpMode');
+const legacyPasswordForm = document.getElementById('legacyPasswordForm');
+const legacyAuthEmail = document.getElementById('legacyAuthEmail');
+const legacyAuthPassword = document.getElementById('legacyAuthPassword');
+const btnLegacyPasswordSubmit = document.getElementById('btnLegacyPasswordSubmit');
+
+// OTP Flow State
+let pendingAuthEmail = '';
+let resendTimerInterval = null;
+let resendCountdown = 30;
 
 // Modals
 const onboardingModal = document.getElementById('onboardingModal');
@@ -570,38 +594,32 @@ function setupEventListeners() {
     });
   }
 
-  // ================= AUTH MODAL INTERACTION =================
-  loginTabBtn.addEventListener('click', switchToLoginMode);
-  signupTabBtn.addEventListener('click', switchToSignupMode);
+  // ================= AUTH MODAL & OTP INTERACTION =================
+  if (loginTabBtn) loginTabBtn.addEventListener('click', () => showAuthStep('email'));
+  if (passwordTabBtn) passwordTabBtn.addEventListener('click', () => showAuthStep('password'));
+  if (btnBackToEmail) btnBackToEmail.addEventListener('click', () => showAuthStep('email'));
+  if (btnBackToOtpMode) btnBackToOtpMode.addEventListener('click', () => showAuthStep('email'));
 
-  authFooterSwitchBtn.addEventListener('click', () => {
-    if (isSignupMode) switchToLoginMode();
-    else switchToSignupMode();
-  });
+  if (closeAuthModalBtn) {
+    closeAuthModalBtn.addEventListener('click', () => {
+      if (authModal) authModal.classList.add('hidden');
+      clearInterval(resendTimerInterval);
+    });
+  }
 
-  // Live Confirm Password Match Listener
-  authConfirmPasswordInput.addEventListener('input', validatePasswordMatch);
-  authPasswordInput.addEventListener('input', () => {
-    if (isSignupMode) validatePasswordMatch();
-  });
+  // Step 1: Send OTP Submit
+  if (otpEmailForm) otpEmailForm.addEventListener('submit', handleSendOtp);
 
-  // Password Show / Hide Toggles
-  togglePasswordBtn.addEventListener('click', () => {
-    const isPass = authPasswordInput.type === 'password';
-    authPasswordInput.type = isPass ? 'text' : 'password';
-    togglePasswordBtn.innerHTML = isPass ? '<i data-lucide="eye-off"></i>' : '<i data-lucide="eye"></i>';
-    lucide.createIcons();
-  });
+  // Step 2: OTP Digit Box Listeners & Form Submissions
+  setupOtpInputListeners();
+  if (otpVerifyForm) otpVerifyForm.addEventListener('submit', handleVerifyOtp);
+  if (btnResendOtp) btnResendOtp.addEventListener('click', handleResendOtp);
 
-  toggleConfirmPasswordBtn.addEventListener('click', () => {
-    const isPass = authConfirmPasswordInput.type === 'password';
-    authConfirmPasswordInput.type = isPass ? 'text' : 'password';
-    toggleConfirmPasswordBtn.innerHTML = isPass ? '<i data-lucide="eye-off"></i>' : '<i data-lucide="eye"></i>';
-    lucide.createIcons();
-  });
+  // Step 3: Complete Signup with Full Name
+  if (otpNameForm) otpNameForm.addEventListener('submit', handleCompleteSignup);
 
-  closeAuthModalBtn.addEventListener('click', () => authModal.classList.add('hidden'));
-  authForm.addEventListener('submit', handleAuthSubmit);
+  // Step 4: Legacy Password Login Submit
+  if (legacyPasswordForm) legacyPasswordForm.addEventListener('submit', handleLegacyPasswordLogin);
 
   // Connect Real Account Listeners
   openConnectModalBtn.addEventListener('click', () => connectAccountModal.classList.remove('hidden'));
@@ -636,72 +654,171 @@ function setupEventListeners() {
   });
 }
 
-function switchToLoginMode() {
-  isSignupMode = false;
-  loginTabBtn.classList.add('active');
-  signupTabBtn.classList.remove('active');
-  nameFieldGroup.classList.add('hidden');
-  confirmPasswordFieldGroup.classList.add('hidden');
-  passwordMatchIndicator.classList.add('hidden');
-  
-  const authEmailLabel = document.getElementById('authEmailLabel');
-  if (authEmailLabel) {
-    authEmailLabel.textContent = currentLang === 'mr' ? 'ईमेल किंवा वापरकर्तानाव' : 'Email Address or Username';
-  }
-  authEmailInput.placeholder = currentLang === 'mr' ? 'ईमेल किंवा वापरकर्तानाव' : 'name@company.com or username';
+function showAuthStep(stepName) {
+  [authStepEmail, authStepOtp, authStepName, authStepPassword].forEach(panel => {
+    if (panel) panel.classList.add('hidden');
+  });
 
-  authModalHeaderTitle.textContent = currentLang === 'mr' ? 'आपले स्वागत आहे! 👋' : 'Welcome Back! 👋';
-  authModalHeaderSub.textContent = currentLang === 'mr' ? 'तुमचे सर्व सोशल मीडिया मॅनेज करण्यासाठी लॉगिन करा.' : 'Sign in to manage and schedule all your social content seamlessly.';
-  authSubmitBtnText.textContent = currentLang === 'mr' ? 'डॅशबोर्डवर लॉगिन करा 🚀' : 'Sign In to Dashboard 🚀';
-  termsText.textContent = currentLang === 'mr' ? 'हे डिव्हाइस ३० दिवसांसाठी सेव्ह ठेवा' : 'Remember this device for 30 days';
-  authFooterPrompt.textContent = currentLang === 'mr' ? 'अद्याप खाते नाही?' : "Don't have an account yet?";
-  authFooterSwitchBtn.textContent = currentLang === 'mr' ? 'मोफत खाते तयार करा' : 'Create one for free';
+  if (stepName === 'email') {
+    if (authStepEmail) authStepEmail.classList.remove('hidden');
+    if (loginTabBtn) loginTabBtn.classList.add('active');
+    if (passwordTabBtn) passwordTabBtn.classList.remove('active');
+    if (authModalHeaderTitle) {
+      authModalHeaderTitle.textContent = currentLang === 'mr' ? 'EkPost मध्ये आपले स्वागत आहे 👋' : 'Welcome to EkPost 👋';
+    }
+    if (authModalHeaderSub) {
+      authModalHeaderSub.textContent = currentLang === 'mr' ? 'पासवर्डशिवाय सुरक्षित Email OTP द्वारे लॉगिन किंवा नोंदणी करा.' : 'Sign in or register with secure, passwordless Email OTP.';
+    }
+    setTimeout(() => { if (otpEmailInput) otpEmailInput.focus(); }, 120);
+  } else if (stepName === 'otp') {
+    if (authStepOtp) authStepOtp.classList.remove('hidden');
+    if (authModalHeaderTitle) {
+      authModalHeaderTitle.textContent = currentLang === 'mr' ? 'व्हेरिफिकेशन कोड टाका 🔐' : 'Security Verification 🔐';
+    }
+    if (authModalHeaderSub) {
+      authModalHeaderSub.textContent = currentLang === 'mr' ? 'तुमच्या इनबॉक्समध्ये ६ अंकी कोड पाठवला आहे.' : 'Enter the 6-digit code sent to your email inbox.';
+    }
+    resetOtpBoxes();
+    setTimeout(() => {
+      const firstInput = document.querySelector('.otp-box-input[data-idx="0"]');
+      if (firstInput) firstInput.focus();
+    }, 120);
+  } else if (stepName === 'name') {
+    if (authStepName) authStepName.classList.remove('hidden');
+    if (authModalHeaderTitle) {
+      authModalHeaderTitle.textContent = currentLang === 'mr' ? 'ईमेल व्हेरिफाय झाले 🎉' : 'Email Verified! 🎉';
+    }
+    if (authModalHeaderSub) {
+      authModalHeaderSub.textContent = currentLang === 'mr' ? 'तुमचे प्रोफाइल पूर्ण करण्यासाठी आपले नाव टाका.' : 'Please enter your full name to complete your profile.';
+    }
+    setTimeout(() => { if (otpFullNameInput) otpFullNameInput.focus(); }, 120);
+  } else if (stepName === 'password') {
+    if (authStepPassword) authStepPassword.classList.remove('hidden');
+    if (passwordTabBtn) passwordTabBtn.classList.add('active');
+    if (loginTabBtn) loginTabBtn.classList.remove('active');
+    if (authModalHeaderTitle) {
+      authModalHeaderTitle.textContent = currentLang === 'mr' ? 'पासवर्डद्वारे लॉगिन 🔑' : 'Sign in with Password 🔑';
+    }
+    if (authModalHeaderSub) {
+      authModalHeaderSub.textContent = currentLang === 'mr' ? 'तुमचा ईमेल/युझरनेम आणि पासवर्ड टाका.' : 'Enter your email or username and account password.';
+    }
+    setTimeout(() => { if (legacyAuthEmail) legacyAuthEmail.focus(); }, 120);
+  }
+
+  if (window.lucide) lucide.createIcons();
+}
+
+function switchToLoginMode() {
+  showAuthStep('email');
+  if (authModal) authModal.classList.remove('hidden');
 }
 
 function switchToSignupMode() {
-  isSignupMode = true;
-  signupTabBtn.classList.add('active');
-  loginTabBtn.classList.remove('active');
-  nameFieldGroup.classList.remove('hidden');
-  confirmPasswordFieldGroup.classList.remove('hidden');
-  
-  const authEmailLabel = document.getElementById('authEmailLabel');
-  if (authEmailLabel) {
-    authEmailLabel.textContent = currentLang === 'mr' ? 'ईमेल पत्ता' : 'Email Address';
-  }
-  authEmailInput.placeholder = 'name@company.com';
-
-  authModalHeaderTitle.textContent = currentLang === 'mr' ? 'नवीन खाते सुरू करा ✨' : 'Start for Free ✨';
-  authModalHeaderSub.textContent = currentLang === 'mr' ? 'एकाच ठिकाणाहून सर्व सोशल नेटवर्क्सवर पब्लिश करा.' : 'Join thousands of creators scheduling content effortlessly.';
-  authSubmitBtnText.textContent = currentLang === 'mr' ? 'खाते तयार करा व पुढे जा 🚀' : 'Create My Account & Get Started 🚀';
-  termsText.textContent = currentLang === 'mr' ? 'मी Terms & Conditions मान्य करतो' : 'I agree to the Terms of Service & Privacy Policy';
-  authFooterPrompt.textContent = currentLang === 'mr' ? 'आधीच खाते आहे का?' : 'Already have an account?';
-  authFooterSwitchBtn.textContent = currentLang === 'mr' ? 'येथे लॉगिन करा' : 'Sign in here';
+  showAuthStep('email');
+  if (authModal) authModal.classList.remove('hidden');
 }
 
-function validatePasswordMatch() {
-  const p1 = authPasswordInput.value;
-  const p2 = authConfirmPasswordInput.value;
+function resetOtpBoxes() {
+  document.querySelectorAll('.otp-box-input').forEach(input => {
+    input.value = '';
+    input.classList.remove('has-value');
+  });
+}
 
-  if (!p2) {
-    passwordMatchIndicator.classList.add('hidden');
-    return true;
+function getOtpInputValue() {
+  let val = '';
+  document.querySelectorAll('.otp-box-input').forEach(input => {
+    val += (input.value || '').trim();
+  });
+  return val;
+}
+
+function setupOtpInputListeners() {
+  const inputs = Array.from(document.querySelectorAll('.otp-box-input'));
+  if (!inputs.length) return;
+
+  inputs.forEach((input, index) => {
+    input.addEventListener('input', (e) => {
+      const val = e.target.value.replace(/[^0-9]/g, '');
+      e.target.value = val ? val.slice(-1) : '';
+
+      if (e.target.value) {
+        e.target.classList.add('has-value');
+        if (index < inputs.length - 1) {
+          inputs[index + 1].focus();
+        }
+      } else {
+        e.target.classList.remove('has-value');
+      }
+
+      // If all 6 digits entered, auto submit verification
+      const fullCode = getOtpInputValue();
+      if (fullCode.length === 6) {
+        handleVerifyOtp();
+      }
+    });
+
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Backspace') {
+        if (!e.target.value && index > 0) {
+          inputs[index - 1].focus();
+          inputs[index - 1].value = '';
+          inputs[index - 1].classList.remove('has-value');
+        } else {
+          e.target.value = '';
+          e.target.classList.remove('has-value');
+        }
+      } else if (e.key === 'ArrowLeft' && index > 0) {
+        inputs[index - 1].focus();
+      } else if (e.key === 'ArrowRight' && index < inputs.length - 1) {
+        inputs[index + 1].focus();
+      }
+    });
+
+    input.addEventListener('paste', (e) => {
+      e.preventDefault();
+      const pasteData = (e.clipboardData || window.clipboardData).getData('text');
+      const digits = (pasteData || '').replace(/[^0-9]/g, '').slice(0, 6);
+      if (!digits) return;
+
+      digits.split('').forEach((d, i) => {
+        if (inputs[i]) {
+          inputs[i].value = d;
+          inputs[i].classList.add('has-value');
+        }
+      });
+
+      const nextFocusIdx = Math.min(digits.length, inputs.length - 1);
+      inputs[nextFocusIdx].focus();
+
+      if (digits.length === 6) {
+        handleVerifyOtp();
+      }
+    });
+  });
+}
+
+function startResendTimer() {
+  clearInterval(resendTimerInterval);
+  resendCountdown = 30;
+  if (btnResendOtp) {
+    btnResendOtp.disabled = true;
+    btnResendOtp.innerHTML = `${currentLang === 'mr' ? 'पुन्हा कोड पाठवा' : 'Resend code in'} <span id="resendTimer">${resendCountdown}</span>s`;
   }
 
-  passwordMatchIndicator.classList.remove('hidden');
-  if (p1 === p2 && p1.length >= 6) {
-    passwordMatchIndicator.className = 'password-match-msg valid';
-    matchIcon.textContent = '✓';
-    matchText.textContent = currentLang === 'mr' ? 'पासवर्ड जुळले ✅' : 'Passwords match';
-    return true;
-  } else {
-    passwordMatchIndicator.className = 'password-match-msg invalid';
-    matchIcon.textContent = '✕';
-    matchText.textContent = p1.length < 6 
-      ? (currentLang === 'mr' ? 'किमान ६ अक्षरे असावीत' : 'Must be at least 6 characters')
-      : (currentLang === 'mr' ? 'पासवर्ड जुळत नाहीत' : 'Passwords do not match');
-    return false;
-  }
+  resendTimerInterval = setInterval(() => {
+    resendCountdown--;
+    const timerSpan = document.getElementById('resendTimer');
+    if (timerSpan) timerSpan.textContent = resendCountdown;
+
+    if (resendCountdown <= 0) {
+      clearInterval(resendTimerInterval);
+      if (btnResendOtp) {
+        btnResendOtp.disabled = false;
+        btnResendOtp.innerHTML = currentLang === 'mr' ? 'पुन्हा कोड पाठवा ↻' : 'Resend code ↻';
+      }
+    }
+  }, 1000);
 }
 
 // Quick Social Auth Simulation
@@ -808,88 +925,224 @@ function renderUserProfile(user) {
   lucide.createIcons();
 }
 
-async function handleAuthSubmit(e) {
-  e.preventDefault();
-  const email = authEmailInput.value.trim();
-  const password = authPasswordInput.value;
-  const name = authNameInput ? authNameInput.value.trim() : '';
+// ================= OTP AUTH HANDLERS =================
 
-  if (!email) {
-    showToast(currentLang === 'mr' ? 'कृपया ईमेल किंवा युझरनेम टाका.' : 'Please enter your email or username.', 'error');
-    authEmailInput.focus();
+// Step 1: Send OTP to Email
+async function handleSendOtp(e) {
+  if (e) e.preventDefault();
+  const email = (otpEmailInput ? otpEmailInput.value : '').trim().toLowerCase();
+
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    showToast(currentLang === 'mr' ? 'कृपया वैध ईमेल पत्ता टाका.' : 'Please enter a valid email address.', 'error');
+    if (otpEmailInput) otpEmailInput.focus();
     return;
   }
 
-  if (!password) {
-    showToast(currentLang === 'mr' ? 'कृपया पासवर्ड टाका.' : 'Please enter your password.', 'error');
-    authPasswordInput.focus();
-    return;
-  }
-
-  if (isSignupMode) {
-    if (!name) {
-      showToast(currentLang === 'mr' ? 'कृपया आपले पूर्ण नाव टाका.' : 'Please enter your full name.', 'error');
-      if (authNameInput) authNameInput.focus();
-      return;
-    }
-    const confirmPass = authConfirmPasswordInput ? authConfirmPasswordInput.value : '';
-    if (password !== confirmPass) {
-      showToast(currentLang === 'mr' ? 'कृपया दोन्ही पासवर्ड समान टाका.' : 'Passwords do not match.', 'error');
-      if (authConfirmPasswordInput) authConfirmPasswordInput.focus();
-      return;
-    }
-    if (password.length < 6) {
-      showToast(currentLang === 'mr' ? 'पासवर्ड किमान ६ अक्षरांचा असावा.' : 'Password must be at least 6 characters.', 'error');
-      authPasswordInput.focus();
-      return;
-    }
-  }
-
-  const origBtnText = authSubmitBtnText.textContent;
-  authSubmitBtn.disabled = true;
-  authSubmitBtnText.textContent = isSignupMode 
-    ? (currentLang === 'mr' ? 'खाते तयार करत आहे...' : 'Creating Account...') 
-    : (currentLang === 'mr' ? 'लॉगिन करत आहे...' : 'Signing In...');
-
-  const endpoint = isSignupMode ? '/auth/signup' : '/auth/login';
-  const payload = isSignupMode ? { name, email, password } : { email, password };
+  const origText = btnSendOtpText ? btnSendOtpText.textContent : '';
+  if (btnSendOtp) btnSendOtp.disabled = true;
+  if (btnSendOtpText) btnSendOtpText.textContent = currentLang === 'mr' ? 'कोड पाठवत आहे... ⏳' : 'Sending code... ⏳';
 
   try {
-    const res = await fetch(endpoint, {
+    const res = await fetch('/api/auth/send-otp', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+      body: JSON.stringify({ email })
     });
 
     const data = await res.json();
     if (data.success) {
-      authToken = data.token;
-      currentUser = data.user;
-      localStorage.setItem('ekpost_auth_token', authToken);
-      renderUserProfile(currentUser);
-      authModal.classList.add('hidden');
-      authForm.reset();
-      if (passwordMatchIndicator) passwordMatchIndicator.classList.add('hidden');
-      
-      if (isSignupMode) {
-        if (onboardingModal) onboardingModal.classList.remove('hidden');
-        showToast(currentLang === 'mr' ? `खाते तयार झाले! स्वागत आहे, ${data.user.name} 🎉` : `Account created! Welcome, ${data.user.name} 🎉`, 'success');
+      pendingAuthEmail = email;
+      if (otpRecipientEmail) otpRecipientEmail.textContent = email;
+
+      // If dev OTP returned (when SMTP is not configured in local environment)
+      if (data.devOtp) {
+        if (otpDevHint) otpDevHint.classList.remove('hidden');
+        if (otpDevCode) otpDevCode.textContent = data.devOtp;
       } else {
-        showToast(currentLang === 'mr' ? `स्वागत आहे, ${data.user.name}! 🚀` : `Welcome back, ${data.user.name}! 🚀`, 'success');
+        if (otpDevHint) otpDevHint.classList.add('hidden');
       }
 
-      navigateToView('dashboard-view');
-      await loadAccounts();
-      await loadPosts();
+      showAuthStep('otp');
+      startResendTimer();
+      showToast(currentLang === 'mr' ? '६ अंकी व्हेरिफिकेशन कोड ईमेलवर पाठवला! ✉️' : 'Verification code sent to your email! ✉️', 'success');
     } else {
-      showToast(data.error || 'Authentication error. Please try again.', 'error');
+      showToast(data.error || 'Failed to send verification code. Please try again.', 'error');
     }
   } catch (err) {
     showToast('Network error: ' + err.message, 'error');
   } finally {
-    authSubmitBtn.disabled = false;
-    authSubmitBtnText.textContent = origBtnText;
+    if (btnSendOtp) btnSendOtp.disabled = false;
+    if (btnSendOtpText) btnSendOtpText.textContent = origText;
   }
+}
+
+// Resend OTP
+async function handleResendOtp() {
+  if (!pendingAuthEmail || resendCountdown > 0) return;
+  if (btnResendOtp) btnResendOtp.disabled = true;
+
+  try {
+    const res = await fetch('/api/auth/send-otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: pendingAuthEmail })
+    });
+    const data = await res.json();
+    if (data.success) {
+      if (data.devOtp && otpDevCode) {
+        otpDevCode.textContent = data.devOtp;
+        if (otpDevHint) otpDevHint.classList.remove('hidden');
+      }
+      resetOtpBoxes();
+      startResendTimer();
+      showToast(currentLang === 'mr' ? 'नवीन कोड पाठवला आहे! ✉️' : 'New code sent to your email! ✉️', 'success');
+      const firstBox = document.querySelector('.otp-box-input[data-idx="0"]');
+      if (firstBox) firstBox.focus();
+    } else {
+      showToast(data.error || 'Failed to resend code.', 'error');
+      if (btnResendOtp) btnResendOtp.disabled = false;
+    }
+  } catch (err) {
+    showToast('Network error: ' + err.message, 'error');
+    if (btnResendOtp) btnResendOtp.disabled = false;
+  }
+}
+
+// Step 2: Verify 6-digit OTP
+async function handleVerifyOtp(e) {
+  if (e) e.preventDefault();
+  const otp = getOtpInputValue();
+
+  if (otp.length < 6) {
+    showToast(currentLang === 'mr' ? 'कृपया पूर्ण ६ अंकी कोड टाका.' : 'Please enter the 6-digit code.', 'error');
+    return;
+  }
+
+  const origText = btnVerifyOtpText ? btnVerifyOtpText.textContent : '';
+  if (btnVerifyOtpSubmit) btnVerifyOtpSubmit.disabled = true;
+  if (btnVerifyOtpText) btnVerifyOtpText.textContent = currentLang === 'mr' ? 'तपासत आहे... ⏳' : 'Verifying... ⏳';
+
+  try {
+    const res = await fetch('/api/auth/verify-otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: pendingAuthEmail, otp })
+    });
+
+    const data = await res.json();
+    if (data.success) {
+      if (data.isNewUser) {
+        // Step 3: Prompt for Name
+        showAuthStep('name');
+        showToast(currentLang === 'mr' ? 'ईमेल व्हेरिफाय झाले! आपले नाव टाका.' : 'Email verified! Please enter your name.', 'success');
+      } else {
+        // Existing user -> Login directly
+        await completeUserSession(data, false);
+      }
+    } else {
+      showToast(data.error || (currentLang === 'mr' ? 'अवैध कोड, कृपया पुन्हा तपासा.' : 'Invalid code, please check and try again.'), 'error');
+      resetOtpBoxes();
+      const firstBox = document.querySelector('.otp-box-input[data-idx="0"]');
+      if (firstBox) firstBox.focus();
+    }
+  } catch (err) {
+    showToast('Network error: ' + err.message, 'error');
+  } finally {
+    if (btnVerifyOtpSubmit) btnVerifyOtpSubmit.disabled = false;
+    if (btnVerifyOtpText) btnVerifyOtpText.textContent = origText;
+  }
+}
+
+// Step 3: Complete Signup (New User provides Name)
+async function handleCompleteSignup(e) {
+  if (e) e.preventDefault();
+  const name = (otpFullNameInput ? otpFullNameInput.value : '').trim();
+
+  if (!name) {
+    showToast(currentLang === 'mr' ? 'कृपया आपले पूर्ण नाव टाका.' : 'Please enter your full name.', 'error');
+    if (otpFullNameInput) otpFullNameInput.focus();
+    return;
+  }
+
+  if (btnCompleteSignup) btnCompleteSignup.disabled = true;
+
+  try {
+    const res = await fetch('/api/auth/complete-signup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: pendingAuthEmail,
+        name,
+        otp: getOtpInputValue()
+      })
+    });
+
+    const data = await res.json();
+    if (data.success) {
+      await completeUserSession(data, true);
+    } else {
+      showToast(data.error || 'Failed to complete registration.', 'error');
+    }
+  } catch (err) {
+    showToast('Network error: ' + err.message, 'error');
+  } finally {
+    if (btnCompleteSignup) btnCompleteSignup.disabled = false;
+  }
+}
+
+// Step 4: Legacy Password Login
+async function handleLegacyPasswordLogin(e) {
+  if (e) e.preventDefault();
+  const email = (legacyAuthEmail ? legacyAuthEmail.value : '').trim();
+  const password = (legacyAuthPassword ? legacyAuthPassword.value : '');
+
+  if (!email || !password) {
+    showToast(currentLang === 'mr' ? 'कृपया ईमेल आणि पासवर्ड टाका.' : 'Please enter your email and password.', 'error');
+    return;
+  }
+
+  if (btnLegacyPasswordSubmit) btnLegacyPasswordSubmit.disabled = true;
+
+  try {
+    const res = await fetch('/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+
+    const data = await res.json();
+    if (data.success) {
+      await completeUserSession(data, false);
+    } else {
+      showToast(data.error || 'Invalid credentials.', 'error');
+    }
+  } catch (err) {
+    showToast('Network error: ' + err.message, 'error');
+  } finally {
+    if (btnLegacyPasswordSubmit) btnLegacyPasswordSubmit.disabled = false;
+  }
+}
+
+// Helper to complete user authentication session
+async function completeUserSession(data, isNew = false) {
+  authToken = data.token;
+  currentUser = data.user;
+  localStorage.setItem('ekpost_auth_token', authToken);
+  renderUserProfile(currentUser);
+
+  if (authModal) authModal.classList.add('hidden');
+  clearInterval(resendTimerInterval);
+
+  if (isNew) {
+    if (onboardingModal) onboardingModal.classList.remove('hidden');
+    showToast(currentLang === 'mr' ? `खाते तयार झाले! स्वागत आहे, ${data.user.name} 🎉` : `Account created! Welcome, ${data.user.name} 🎉`, 'success');
+  } else {
+    showToast(currentLang === 'mr' ? `स्वागत आहे, ${data.user.name}! 🚀` : `Welcome back, ${data.user.name}! 🚀`, 'success');
+  }
+
+  navigateToView('dashboard-view');
+  await loadAccounts();
+  await loadPosts();
 }
 
 function logoutUser() {
@@ -1109,27 +1362,29 @@ function renderAccounts() {
 
   const liAccount = getActiveLinkedInAccount();
   const twAccount = getActiveTwitterAccount();
+  const fbAccount = getActiveFacebookAccount();
+  const igAccount = getActiveInstagramAccount();
 
   // 1. LinkedIn Card
   if (liAccount) {
     selectedAccountIds.add(liAccount.id);
     const item = document.createElement('div');
-    item.className = 'account-item-linkedin selected';
+    item.className = 'target-account-card platform-linkedin account-item-linkedin selected';
     item.id = 'accountItemLinkedIn';
     item.innerHTML = `
-      <div style="display: flex; align-items: center; gap: 12px;">
-        <div class="chk-box"><i data-lucide="check" style="width: 14px; height: 14px;"></i></div>
-        <img src="${liAccount.avatar || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=100'}" class="account-avatar" alt="${liAccount.name}"/>
-        <div class="account-info">
-          <div class="account-name" style="display: flex; align-items: center; gap: 6px;">
+      <div class="target-account-left">
+        <div class="chk-box"><i data-lucide="check"></i></div>
+        <img src="${liAccount.avatar || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=100'}" class="target-account-avatar" alt="${liAccount.name}"/>
+        <div class="target-account-info">
+          <div class="target-account-name">
             <span class="social-logo social-logo-linkedin social-logo-small">in</span>
             <span>LinkedIn</span>
           </div>
-          <div class="account-platform">${liAccount.name}</div>
+          <div class="target-account-sub" title="${liAccount.name}">${liAccount.name}</div>
         </div>
       </div>
-      <div style="font-size: 0.75rem; color: #10b981; font-weight: 700; background: rgba(16,185,129,0.1); padding: 4px 8px; border-radius: 6px;">
-        Active
+      <div class="target-account-status">
+        <span class="badge-active">Active</span>
       </div>
     `;
 
@@ -1141,7 +1396,7 @@ function renderAccounts() {
       } else {
         selectedAccountIds.add(liAccount.id);
         item.classList.add('selected');
-        item.querySelector('.chk-box').innerHTML = '<i data-lucide="check" style="width: 14px; height: 14px;"></i>';
+        item.querySelector('.chk-box').innerHTML = '<i data-lucide="check"></i>';
       }
       updateSelectedCount();
       lucide.createIcons();
@@ -1149,23 +1404,27 @@ function renderAccounts() {
     accountsListEl.appendChild(item);
   } else {
     const item = document.createElement('div');
-    item.className = 'account-item-linkedin';
-    item.style.borderColor = 'rgba(239, 68, 68, 0.3)';
+    item.className = 'target-account-card platform-linkedin account-item-linkedin unconnected';
+    item.id = 'accountItemLinkedIn';
     item.innerHTML = `
-      <div style="display: flex; align-items: center; gap: 12px;">
-        <div class="chk-box" style="border-color: rgba(255,255,255,0.2);"></div>
-        <div style="width: 38px; height: 38px; border-radius: 50%; background: #0a66c2; display: flex; align-items: center; justify-content: center; color: white;">
+      <div class="target-account-left">
+        <div class="target-account-icon" style="background: #0a66c2;">
           <span class="social-logo social-logo-linkedin">in</span>
         </div>
-        <div class="account-info">
-          <div class="account-name">LinkedIn (Not Connected)</div>
-          <div class="account-platform" style="color: #f87171;">Connect your account to enable publishing</div>
+        <div class="target-account-info">
+          <div class="target-account-name">LinkedIn</div>
+          <div class="target-account-sub">Not connected</div>
         </div>
       </div>
-      <button class="btn-connect-li" style="padding: 0.4rem 0.9rem; font-size: 0.8rem;" onclick="connectLinkedIn()">
-        <i data-lucide="link" style="width: 14px; height: 14px;"></i> Connect
-      </button>
+      <div class="target-account-status">
+        <button class="btn-card-connect" type="button">
+          <i data-lucide="link"></i> <span>Connect</span>
+        </button>
+      </div>
     `;
+    item.addEventListener('click', () => {
+      connectLinkedIn();
+    });
     accountsListEl.appendChild(item);
   }
 
@@ -1173,22 +1432,22 @@ function renderAccounts() {
   if (twAccount) {
     selectedAccountIds.add(twAccount.id);
     const twItem = document.createElement('div');
-    twItem.className = 'account-item-twitter selected';
+    twItem.className = 'target-account-card platform-twitter account-item-twitter selected';
     twItem.id = 'accountItemTwitter';
     twItem.innerHTML = `
-      <div style="display: flex; align-items: center; gap: 12px;">
-        <div class="chk-box"><i data-lucide="check" style="width: 14px; height: 14px;"></i></div>
-        <img src="${twAccount.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100'}" class="account-avatar" alt="${twAccount.name}"/>
-        <div class="account-info">
-          <div class="account-name" style="display: flex; align-items: center; gap: 6px;">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+      <div class="target-account-left">
+        <div class="chk-box"><i data-lucide="check"></i></div>
+        <img src="${twAccount.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100'}" class="target-account-avatar" alt="${twAccount.name}"/>
+        <div class="target-account-info">
+          <div class="target-account-name">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
             <span>X (Twitter)</span>
           </div>
-          <div class="account-platform">${twAccount.name}</div>
+          <div class="target-account-sub" title="${twAccount.name}">${twAccount.name}</div>
         </div>
       </div>
-      <div style="font-size: 0.75rem; color: #10b981; font-weight: 700; background: rgba(16,185,129,0.1); padding: 4px 8px; border-radius: 6px;">
-        Active
+      <div class="target-account-status">
+        <span class="badge-active">Active</span>
       </div>
     `;
 
@@ -1200,7 +1459,7 @@ function renderAccounts() {
       } else {
         selectedAccountIds.add(twAccount.id);
         twItem.classList.add('selected');
-        twItem.querySelector('.chk-box').innerHTML = '<i data-lucide="check" style="width: 14px; height: 14px;"></i>';
+        twItem.querySelector('.chk-box').innerHTML = '<i data-lucide="check"></i>';
       }
       updateSelectedCount();
       lucide.createIcons();
@@ -1208,47 +1467,50 @@ function renderAccounts() {
     accountsListEl.appendChild(twItem);
   } else {
     const twItem = document.createElement('div');
-    twItem.className = 'account-item-twitter';
-    twItem.style.borderColor = 'rgba(255, 255, 255, 0.15)';
+    twItem.className = 'target-account-card platform-twitter account-item-twitter unconnected';
+    twItem.id = 'accountItemTwitter';
     twItem.innerHTML = `
-      <div style="display: flex; align-items: center; gap: 12px;">
-        <div class="chk-box" style="border-color: rgba(255,255,255,0.2);"></div>
-        <div style="width: 38px; height: 38px; border-radius: 50%; background: #000; border: 1px solid rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; color: white;">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+      <div class="target-account-left">
+        <div class="target-account-icon" style="background: #000; border: 1px solid rgba(255,255,255,0.2);">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
         </div>
-        <div class="account-info">
-          <div class="account-name">X / Twitter (Not Connected)</div>
-          <div class="account-platform" style="color: var(--text-muted);">Connect your account to enable tweeting</div>
+        <div class="target-account-info">
+          <div class="target-account-name">X (Twitter)</div>
+          <div class="target-account-sub">Not connected</div>
         </div>
       </div>
-      <button class="btn-connect-tw" style="padding: 0.4rem 0.9rem; font-size: 0.8rem;" onclick="connectTwitter()">
-        <i data-lucide="link" style="width: 14px; height: 14px;"></i> Connect
-      </button>
+      <div class="target-account-status">
+        <button class="btn-card-connect" type="button">
+          <i data-lucide="link"></i> <span>Connect</span>
+        </button>
+      </div>
     `;
+    twItem.addEventListener('click', () => {
+      connectTwitter();
+    });
     accountsListEl.appendChild(twItem);
   }
 
   // 3. Facebook Page Card
-  const fbAccount = getActiveFacebookAccount();
   if (fbAccount) {
     selectedAccountIds.add(fbAccount.id);
     const fbItem = document.createElement('div');
-    fbItem.className = 'account-item-facebook selected';
+    fbItem.className = 'target-account-card platform-facebook account-item-facebook selected';
     fbItem.id = 'accountItemFacebook';
     fbItem.innerHTML = `
-      <div style="display: flex; align-items: center; gap: 12px;">
-        <div class="chk-box"><i data-lucide="check" style="width: 14px; height: 14px;"></i></div>
-        <img src="${fbAccount.avatar || 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Facebook_Logo_%282019%29.png/600px-Facebook_Logo_%282019%29.png'}" class="account-avatar" alt="${fbAccount.name}"/>
-        <div class="account-info">
-          <div class="account-name" style="display: flex; align-items: center; gap: 6px;">
+      <div class="target-account-left">
+        <div class="chk-box"><i data-lucide="check"></i></div>
+        <img src="${fbAccount.avatar || 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Facebook_Logo_%282019%29.png/600px-Facebook_Logo_%282019%29.png'}" class="target-account-avatar" alt="${fbAccount.name}"/>
+        <div class="target-account-info">
+          <div class="target-account-name">
             <span class="social-logo social-logo-facebook">f</span>
             <span>Facebook Page</span>
           </div>
-          <div class="account-platform">${fbAccount.name}</div>
+          <div class="target-account-sub" title="${fbAccount.name}">${fbAccount.name}</div>
         </div>
       </div>
-      <div style="font-size: 0.75rem; color: #10b981; font-weight: 700; background: rgba(16,185,129,0.1); padding: 4px 8px; border-radius: 6px;">
-        Active
+      <div class="target-account-status">
+        <span class="badge-active">Active</span>
       </div>
     `;
 
@@ -1260,7 +1522,7 @@ function renderAccounts() {
       } else {
         selectedAccountIds.add(fbAccount.id);
         fbItem.classList.add('selected');
-        fbItem.querySelector('.chk-box').innerHTML = '<i data-lucide="check" style="width: 14px; height: 14px;"></i>';
+        fbItem.querySelector('.chk-box').innerHTML = '<i data-lucide="check"></i>';
       }
       updateSelectedCount();
       lucide.createIcons();
@@ -1268,47 +1530,50 @@ function renderAccounts() {
     accountsListEl.appendChild(fbItem);
   } else {
     const fbItem = document.createElement('div');
-    fbItem.className = 'account-item-facebook';
-    fbItem.style.borderColor = 'rgba(255, 255, 255, 0.15)';
+    fbItem.className = 'target-account-card platform-facebook account-item-facebook unconnected';
+    fbItem.id = 'accountItemFacebook';
     fbItem.innerHTML = `
-      <div style="display: flex; align-items: center; gap: 12px;">
-        <div class="chk-box" style="border-color: rgba(255,255,255,0.2);"></div>
-        <div style="width: 38px; height: 38px; border-radius: 50%; background: #1877f2; display: flex; align-items: center; justify-content: center; color: white;">
-            <span class="social-logo social-logo-facebook">f</span>
+      <div class="target-account-left">
+        <div class="target-account-icon" style="background: #1877f2;">
+          <span class="social-logo social-logo-facebook">f</span>
         </div>
-        <div class="account-info">
-          <div class="account-name">Facebook Page (Not Connected)</div>
-          <div class="account-platform" style="color: var(--text-muted);">Connect via Meta to publish to pages</div>
+        <div class="target-account-info">
+          <div class="target-account-name">Facebook Page</div>
+          <div class="target-account-sub">Not connected</div>
         </div>
       </div>
-      <button class="btn-connect-meta" style="padding: 0.4rem 0.9rem; font-size: 0.8rem;" onclick="connectFacebook()">
-        <i data-lucide="link" style="width: 14px; height: 14px;"></i> Connect
-      </button>
+      <div class="target-account-status">
+        <button class="btn-card-connect" type="button">
+          <i data-lucide="link"></i> <span>Connect</span>
+        </button>
+      </div>
     `;
+    fbItem.addEventListener('click', () => {
+      connectFacebook();
+    });
     accountsListEl.appendChild(fbItem);
   }
 
   // 4. Instagram Business Card
-  const igAccount = getActiveInstagramAccount();
   if (igAccount) {
     selectedAccountIds.add(igAccount.id);
     const igItem = document.createElement('div');
-    igItem.className = 'account-item-instagram selected';
+    igItem.className = 'target-account-card platform-instagram account-item-instagram selected';
     igItem.id = 'accountItemInstagram';
     igItem.innerHTML = `
-      <div style="display: flex; align-items: center; gap: 12px;">
-        <div class="chk-box"><i data-lucide="check" style="width: 14px; height: 14px;"></i></div>
-        <img src="${igAccount.avatar || 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Instagram_icon.png/600px-Instagram_icon.png'}" class="account-avatar" alt="${igAccount.name}"/>
-        <div class="account-info">
-          <div class="account-name" style="display: flex; align-items: center; gap: 6px;">
+      <div class="target-account-left">
+        <div class="chk-box"><i data-lucide="check"></i></div>
+        <img src="${igAccount.avatar || 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Instagram_icon.png/600px-Instagram_icon.png'}" class="target-account-avatar" alt="${igAccount.name}"/>
+        <div class="target-account-info">
+          <div class="target-account-name">
             <span class="social-logo social-logo-instagram">◎</span>
             <span>Instagram Business</span>
           </div>
-          <div class="account-platform">${igAccount.name}</div>
+          <div class="target-account-sub" title="${igAccount.name}">${igAccount.name}</div>
         </div>
       </div>
-      <div style="font-size: 0.75rem; color: #10b981; font-weight: 700; background: rgba(16,185,129,0.1); padding: 4px 8px; border-radius: 6px;">
-        Active
+      <div class="target-account-status">
+        <span class="badge-active">Active</span>
       </div>
     `;
 
@@ -1320,7 +1585,7 @@ function renderAccounts() {
       } else {
         selectedAccountIds.add(igAccount.id);
         igItem.classList.add('selected');
-        igItem.querySelector('.chk-box').innerHTML = '<i data-lucide="check" style="width: 14px; height: 14px;"></i>';
+        igItem.querySelector('.chk-box').innerHTML = '<i data-lucide="check"></i>';
       }
       updateSelectedCount();
       lucide.createIcons();
@@ -1328,23 +1593,27 @@ function renderAccounts() {
     accountsListEl.appendChild(igItem);
   } else {
     const igItem = document.createElement('div');
-    igItem.className = 'account-item-instagram';
-    igItem.style.borderColor = 'rgba(255, 255, 255, 0.15)';
+    igItem.className = 'target-account-card platform-instagram account-item-instagram unconnected';
+    igItem.id = 'accountItemInstagram';
     igItem.innerHTML = `
-      <div style="display: flex; align-items: center; gap: 12px;">
-        <div class="chk-box" style="border-color: rgba(255,255,255,0.2);"></div>
-        <div style="width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045); display: flex; align-items: center; justify-content: center; color: white;">
+      <div class="target-account-left">
+        <div class="target-account-icon" style="background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045);">
           <span class="social-logo social-logo-instagram">◎</span>
         </div>
-        <div class="account-info">
-          <div class="account-name">Instagram Business (Not Connected)</div>
-          <div class="account-platform" style="color: var(--text-muted);">Connect via Meta to publish to IG</div>
+        <div class="target-account-info">
+          <div class="target-account-name">Instagram</div>
+          <div class="target-account-sub">Not connected</div>
         </div>
       </div>
-      <button class="btn-connect-meta" style="padding: 0.4rem 0.9rem; font-size: 0.8rem;" onclick="connectInstagram()">
-        <i data-lucide="link" style="width: 14px; height: 14px;"></i> Connect
-      </button>
+      <div class="target-account-status">
+        <button class="btn-card-connect" type="button">
+          <i data-lucide="link"></i> <span>Connect</span>
+        </button>
+      </div>
     `;
+    igItem.addEventListener('click', () => {
+      connectInstagram();
+    });
     accountsListEl.appendChild(igItem);
   }
 
@@ -1354,14 +1623,17 @@ function renderAccounts() {
     if (p !== 'linkedin' && p !== 'twitter' && p !== 'x' && p !== 'facebook' && p !== 'instagram') {
       selectedAccountIds.add(acc.id);
       const otherItem = document.createElement('div');
-      otherItem.className = 'account-item-linkedin selected';
+      otherItem.className = 'target-account-card selected';
       otherItem.innerHTML = `
-        <div style="display: flex; align-items: center; gap: 12px;">
-          <div class="chk-box"><i data-lucide="check" style="width: 14px; height: 14px;"></i></div>
-          <div class="account-info">
-            <div class="account-name">${acc.platform}</div>
-            <div class="account-platform">${acc.name}</div>
+        <div class="target-account-left">
+          <div class="chk-box"><i data-lucide="check"></i></div>
+          <div class="target-account-info">
+            <div class="target-account-name">${acc.platform}</div>
+            <div class="target-account-sub" title="${acc.name}">${acc.name}</div>
           </div>
+        </div>
+        <div class="target-account-status">
+          <span class="badge-active">Active</span>
         </div>
       `;
       otherItem.addEventListener('click', () => {
@@ -1372,7 +1644,7 @@ function renderAccounts() {
         } else {
           selectedAccountIds.add(acc.id);
           otherItem.classList.add('selected');
-          otherItem.querySelector('.chk-box').innerHTML = '<i data-lucide="check" style="width: 14px; height: 14px;"></i>';
+          otherItem.querySelector('.chk-box').innerHTML = '<i data-lucide="check"></i>';
         }
         updateSelectedCount();
         lucide.createIcons();

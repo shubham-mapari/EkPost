@@ -33,9 +33,76 @@ function extractUserFromReq(req) {
   return { id: 'user_default_admin', name: 'Demo Creator', email: 'admin@ekpost.com' };
 }
 
+import { OTPService } from '../services/otp.service.js';
+
 // ─────────────────────────────────────────────────────────────────────────────
-// User Authentication Endpoints (Signup / Login / Profile)
+// User Authentication Endpoints (Signup / Login / Profile & OTP)
 // ─────────────────────────────────────────────────────────────────────────────
+
+// 1. Send OTP to Email (Login or Signup)
+authRouter.post('/send-otp', async (req, res) => {
+  const { email } = req.body;
+  try {
+    const result = await OTPService.requestOtp(email);
+    res.json(result);
+  } catch (err) {
+    res.status(400).json({ success: false, error: err.message });
+  }
+});
+
+// 2. Verify OTP code
+authRouter.post('/verify-otp', async (req, res) => {
+  const { email, otp } = req.body;
+  try {
+    const verification = OTPService.verifyOtp(email, otp);
+    const normalizedEmail = email.trim().toLowerCase();
+    const existingUser = UserService.findUserByEmail(normalizedEmail);
+
+    if (existingUser) {
+      // Consume OTP & immediately log in
+      OTPService.consumeOtp(normalizedEmail);
+      const token = UserService.generateToken(existingUser);
+      return res.json({
+        success: true,
+        isNewUser: false,
+        message: 'Logged in successfully!',
+        token,
+        user: { id: existingUser.id, name: existingUser.name, email: existingUser.email }
+      });
+    }
+
+    // New user -> prompt for Name
+    return res.json({
+      success: true,
+      isNewUser: true,
+      message: 'Email verified! Please enter your name to complete signup.',
+      email: normalizedEmail
+    });
+  } catch (err) {
+    res.status(400).json({ success: false, error: err.message });
+  }
+});
+
+// 3. Complete Signup with Name after OTP verification
+authRouter.post('/complete-signup', async (req, res) => {
+  const { email, name, otp } = req.body;
+  try {
+    // Verify OTP again if provided, or verify state
+    if (otp) {
+      OTPService.verifyOtp(email, otp);
+      OTPService.consumeOtp(email);
+    }
+    const result = await UserService.registerWithOtp({ email, name });
+    res.status(201).json({
+      success: true,
+      message: 'Account created and verified successfully!',
+      ...result
+    });
+  } catch (err) {
+    res.status(400).json({ success: false, error: err.message });
+  }
+});
+
 authRouter.post('/signup', async (req, res) => {
   const { name, email, password } = req.body;
   try {
@@ -59,6 +126,7 @@ authRouter.post('/login', async (req, res) => {
 authRouter.get('/me', authenticateUser, (req, res) => {
   res.json({ success: true, user: req.user });
 });
+
 
 // ─────────────────────────────────────────────────────────────────────────────
 // 1. GET /api/auth/linkedin & /auth/linkedin (and /login alias)

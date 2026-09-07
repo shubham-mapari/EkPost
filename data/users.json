@@ -38,5 +38,14 @@
     "username": "mapari",
     "passwordHash": "$2b$10$o4Q93ee0BLrPRrAPJC.AROV.Y4sDXv3bxB.5Tgm43Tgs7cApYjek.",
     "createdAt": "2026-09-05T04:55:29.304Z"
+  },
+  {
+    "id": "user_1788799286935",
+    "name": "Admin",
+    "email": "ekpost23@gmail.com",
+    "username": "ekpost23",
+    "passwordHash": "$2b$10$F2oKzLFvSHbbv2pkUp4e9uyh8iy2d7diL4zAgPzVOoasRwrT7TAri",
+    "authMethod": "email_otp",
+    "createdAt": "2026-09-07T16:41:26.935Z"
   }
 ]

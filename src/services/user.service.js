@@ -133,6 +133,55 @@ export class UserService {
     return usersDb.find(u => u.id === id) || null;
   }
 
+  static findUserByEmail(email) {
+    if (!email) return null;
+    const normalized = email.trim().toLowerCase();
+    return usersDb.find(u => u.email.toLowerCase() === normalized) || null;
+  }
+
+  /**
+   * Register or log in a user verified via Email OTP (Passwordless)
+   */
+  static async registerWithOtp({ name, email }) {
+    if (!email) {
+      throw new Error('Email is required.');
+    }
+    const normalizedEmail = email.trim().toLowerCase();
+    let existing = this.findUserByEmail(normalizedEmail);
+    if (existing) {
+      const token = UserService.generateToken(existing);
+      return {
+        token,
+        user: { id: existing.id, name: existing.name, email: existing.email }
+      };
+    }
+
+    const emailPrefix = normalizedEmail.includes('@') ? normalizedEmail.split('@')[0] : normalizedEmail;
+    const displayName = name?.trim() || emailPrefix;
+    const fallbackPasswordHash = await bcrypt.hash(String(Date.now() + Math.random()), 10);
+
+    const newUser = {
+      id: `user_${Date.now()}`,
+      name: displayName,
+      email: normalizedEmail,
+      username: emailPrefix,
+      passwordHash: fallbackPasswordHash,
+      authMethod: 'email_otp',
+      createdAt: new Date().toISOString()
+    };
+
+    usersDb.push(newUser);
+    saveUsersToDisk(usersDb);
+
+    console.log(`[UserService] New user verified via Email OTP: ${newUser.name} (${newUser.email})`);
+
+    const token = UserService.generateToken(newUser);
+    return {
+      token,
+      user: { id: newUser.id, name: newUser.name, email: newUser.email }
+    };
+  }
+
   static updateUser(id, { name, email }) {
     const user = usersDb.find(u => u.id === id);
     if (!user) return null;
@@ -150,3 +199,4 @@ export class UserService {
     );
   }
 }
+

@@ -652,49 +652,260 @@ body {
 
 .btn-sm-connect:hover { background: var(--accent-primary); color: white; }
 
-/* Accounts Grid */
+/* ================= TARGET ACCOUNTS COMPOSER GRID ================= */
 .accounts-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
-  gap: 8px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px;
+  width: 100%;
 }
 
-@media (max-width: 480px) {
-  .accounts-grid { grid-template-columns: 1fr; }
+@media (max-width: 640px) {
+  .accounts-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
 }
 
-.account-item {
+.target-account-card,
+.account-item-linkedin,
+.account-item-twitter,
+.account-item-facebook,
+.account-item-instagram {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 7px 10px;
-  background: var(--bg-input);
-  border: 1.5px solid var(--bg-card-border);
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 14px;
   border-radius: var(--radius-md);
+  border: 1.5px solid var(--bg-card-border);
+  background: rgba(18, 24, 38, 0.95);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
   user-select: none;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+  margin-bottom: 0 !important;
 }
 
-.account-item:hover { border-color: rgba(99, 102, 241, 0.5); }
-.account-item.selected {
-  border-color: #6366f1;
-  background: rgba(99, 102, 241, 0.15);
-  box-shadow: 0 0 12px rgba(99, 102, 241, 0.25);
+.target-account-card:hover,
+.account-item-linkedin:hover,
+.account-item-twitter:hover,
+.account-item-facebook:hover,
+.account-item-instagram:hover {
+  transform: translateY(-1px);
+  border-color: rgba(255, 255, 255, 0.22);
+  background: rgba(22, 30, 48, 0.98);
 }
 
-.account-avatar {
-  width: 28px;
-  height: 28px;
+/* Left Group */
+.target-account-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Checkbox */
+.target-account-card .chk-box,
+.account-item-linkedin .chk-box,
+.account-item-twitter .chk-box,
+.account-item-facebook .chk-box,
+.account-item-instagram .chk-box {
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+  border: 1.5px solid rgba(255, 255, 255, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: white;
+  transition: all 0.2s;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.chk-box svg {
+  width: 13px;
+  height: 13px;
+  stroke-width: 3;
+}
+
+/* Avatar / Platform Badge */
+.target-account-avatar {
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
   object-fit: cover;
+  flex-shrink: 0;
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
 }
 
-.account-info { flex: 1; overflow: hidden; }
-.account-name { font-size: 0.75rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.account-platform { font-size: 0.65rem; color: var(--text-muted); }
-.account-check { color: var(--accent-primary); opacity: 0; }
-.account-item.selected .account-check { opacity: 1; }
+.target-account-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: white;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+/* Info container */
+.target-account-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+}
+
+.target-account-name {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.3;
+}
+
+.target-account-sub {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 1px;
+}
+
+/* Right Status / Action */
+.target-account-status {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  margin-left: 6px;
+}
+
+.badge-active {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #10b981;
+  background: rgba(16, 185, 129, 0.14);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  padding: 3px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+
+.btn-card-connect {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 5px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.08);
+  color: #f1f5f9;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.btn-card-connect svg {
+  width: 12px;
+  height: 12px;
+}
+
+.btn-card-connect:hover {
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+  color: white;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.4);
+}
+
+/* Platform specific colors for selected and unselected */
+/* 1. LinkedIn */
+.platform-linkedin.selected,
+.account-item-linkedin.selected {
+  border-color: #0a66c2 !important;
+  background: rgba(10, 102, 194, 0.14) !important;
+  box-shadow: 0 0 14px rgba(10, 102, 194, 0.25) !important;
+}
+.platform-linkedin.selected .chk-box,
+.account-item-linkedin.selected .chk-box {
+  background: #0a66c2 !important;
+  border-color: #0a66c2 !important;
+  color: white !important;
+}
+
+/* 2. Twitter / X */
+.platform-twitter.selected,
+.account-item-twitter.selected {
+  border-color: rgba(255, 255, 255, 0.75) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 0 14px rgba(255, 255, 255, 0.15) !important;
+}
+.platform-twitter.selected .chk-box,
+.account-item-twitter.selected .chk-box {
+  background: #ffffff !important;
+  border-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+/* 3. Facebook */
+.platform-facebook.selected,
+.account-item-facebook.selected {
+  border-color: #1877f2 !important;
+  background: rgba(24, 119, 242, 0.14) !important;
+  box-shadow: 0 0 14px rgba(24, 119, 242, 0.25) !important;
+}
+.platform-facebook.selected .chk-box,
+.account-item-facebook.selected .chk-box {
+  background: #1877f2 !important;
+  border-color: #1877f2 !important;
+  color: white !important;
+}
+
+/* 4. Instagram */
+.platform-instagram.selected,
+.account-item-instagram.selected {
+  border-color: #e1306c !important;
+  background: rgba(225, 48, 108, 0.14) !important;
+  box-shadow: 0 0 14px rgba(225, 48, 108, 0.25) !important;
+}
+.platform-instagram.selected .chk-box,
+.account-item-instagram.selected .chk-box {
+  background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045) !important;
+  border-color: #e1306c !important;
+  color: white !important;
+}
+
+/* Unconnected State */
+.target-account-card.unconnected {
+  border-style: dashed;
+  border-color: rgba(255, 255, 255, 0.15);
+  background: rgba(18, 24, 38, 0.6);
+  opacity: 0.88;
+}
+.target-account-card.unconnected:hover {
+  opacity: 1;
+  border-color: rgba(255, 255, 255, 0.35);
+  background: rgba(18, 24, 38, 0.9);
+}
 
 /* Composer Form */
 textarea#postContent {
@@ -1432,13 +1643,174 @@ input:checked + .slider:before { transform: translateX(18px); }
   color: var(--text-muted);
 }
 
-.auth-switch-link {
+.auth-switch-link:hover { text-decoration: underline; }
+
+/* ================= EMAIL OTP FLOW STYLES ================= */
+.auth-step-panel {
+  animation: fadeInStep 0.25s ease;
+}
+
+@keyframes fadeInStep {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.otp-header-box {
+  text-align: center;
+  margin-bottom: 1.2rem;
+}
+
+.btn-back-link {
+  background: transparent;
+  border: none;
+  color: #818cf8;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 0.8rem;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: rgba(99, 102, 241, 0.08);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  transition: all 0.2s;
+}
+
+.btn-back-link:hover {
+  background: rgba(99, 102, 241, 0.2);
+  color: #c7d2fe;
+}
+
+.otp-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 4px;
+}
+
+.otp-desc {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.otp-desc strong {
+  color: #c7d2fe;
+}
+
+/* 6-Digit Boxes */
+.otp-digits-wrapper {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin: 1.2rem 0;
+}
+
+.otp-box-input {
+  width: 46px;
+  height: 54px;
+  background: #141c2e;
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #818cf8;
+  text-align: center;
+  caret-color: #6366f1;
+  transition: all 0.2s ease;
+  font-family: monospace;
+}
+
+.otp-box-input:focus {
+  outline: none;
+  border-color: #6366f1;
+  background: #18233c;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.35);
+  transform: translateY(-2px);
+}
+
+.otp-box-input.filled {
+  border-color: rgba(99, 102, 241, 0.6);
+  background: rgba(99, 102, 241, 0.1);
+}
+
+@media (max-width: 420px) {
+  .otp-digits-wrapper {
+    gap: 5px;
+  }
+  .otp-box-input {
+    width: 38px;
+    height: 46px;
+    font-size: 1.25rem;
+    border-radius: 8px;
+  }
+}
+
+.otp-dev-banner {
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px dashed rgba(245, 158, 11, 0.4);
+  color: #fbbf24;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.otp-dev-banner strong {
+  font-family: monospace;
+  font-size: 0.95rem;
+  letter-spacing: 2px;
+  color: #fff;
+}
+
+.otp-resend-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  margin: 0.8rem 0;
+}
+
+.btn-resend-link {
+  background: transparent;
+  border: none;
   color: #818cf8;
   font-weight: 700;
-  text-decoration: none;
-  margin-left: 4px;
+  font-size: 0.75rem;
+  cursor: pointer;
 }
-.auth-switch-link:hover { text-decoration: underline; }
+
+.btn-resend-link:disabled {
+  color: #64748b;
+  cursor: not-allowed;
+}
+
+.btn-resend-link:not(:disabled):hover {
+  text-decoration: underline;
+  color: #a5b4fc;
+}
+
+.verified-badge-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(16, 185, 129, 0.15);
+  border: 2px solid rgba(16, 185, 129, 0.4);
+  color: #10b981;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 0.8rem;
+}
+
+.verified-badge-icon svg {
+  width: 28px;
+  height: 28px;
+}
 
 /* ================= GENERAL MODALS ================= */
 .modal-overlay {
@@ -1667,41 +2039,7 @@ input:checked + .slider:before { transform: translateX(18px); }
   border-color: #ef4444;
 }
 
-.account-item-linkedin {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1rem 1.25rem;
-  border-radius: var(--radius-md);
-  border: 1.5px solid var(--bg-card-border);
-  background: rgba(18, 24, 38, 0.95);
-  cursor: pointer;
-  transition: all 0.2s ease;
-  user-select: none;
-  margin-bottom: 0.75rem;
-}
 
-.account-item-linkedin.selected {
-  border-color: #0a66c2;
-  background: rgba(10, 102, 194, 0.12);
-}
-
-.account-item-linkedin .chk-box {
-  width: 22px;
-  height: 22px;
-  border-radius: 6px;
-  border: 2px solid var(--text-muted);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  transition: all 0.2s;
-}
-
-.account-item-linkedin.selected .chk-box {
-  background: #0a66c2;
-  border-color: #0a66c2;
-}
 
 /* ================= X (TWITTER) INTEGRATION DEDICATED STYLES ================= */
 .twitter-connection-box {
@@ -1810,42 +2148,7 @@ input:checked + .slider:before { transform: translateX(18px); }
   border-color: #ef4444;
 }
 
-.account-item-twitter {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1rem 1.25rem;
-  border-radius: var(--radius-md);
-  border: 1.5px solid var(--bg-card-border);
-  background: rgba(18, 24, 38, 0.95);
-  cursor: pointer;
-  transition: all 0.2s ease;
-  user-select: none;
-  margin-bottom: 0.75rem;
-}
 
-.account-item-twitter.selected {
-  border-color: #ffffff;
-  background: rgba(255, 255, 255, 0.08);
-}
-
-.account-item-twitter .chk-box {
-  width: 22px;
-  height: 22px;
-  border-radius: 6px;
-  border: 2px solid var(--text-muted);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  transition: all 0.2s;
-}
-
-.account-item-twitter.selected .chk-box {
-  background: #ffffff;
-  border-color: #ffffff;
-  color: #000000;
-}
 
 /* ================= META (FACEBOOK & INSTAGRAM) INTEGRATION STYLES ================= */
 .oauth-meta {
@@ -1999,61 +2302,245 @@ input:checked + .slider:before { transform: translateX(18px); }
   background: rgba(239, 68, 68, 0.2);
 }
 
-.account-item-facebook,
-.account-item-instagram {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.875rem 1rem;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid var(--bg-card-border);
-  border-radius: var(--radius-md);
-  margin-bottom: 0.65rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  user-select: none;
+/* ================= ADVANCED MOBILE RESPONSIVENESS & UI POLISH ================= */
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+  width: 100%;
 }
 
-.account-item-facebook:hover {
-  border-color: rgba(24, 119, 242, 0.5);
-  background: rgba(24, 119, 242, 0.05);
+@media (max-width: 768px) {
+  body {
+    padding-bottom: 95px !important;
+  }
+
+  /* Header & Navbar Mobile Optimization */
+  .navbar {
+    padding: 0.6rem 0.9rem;
+  }
+
+  .nav-container {
+    gap: 8px;
+  }
+
+  .brand {
+    gap: 8px;
+  }
+
+  .brand-logo {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+  }
+
+  .brand-text h1 {
+    font-size: 1rem;
+  }
+
+  .brand-text p {
+    font-size: 0.65rem;
+  }
+
+  .nav-actions {
+    gap: 6px;
+  }
+
+  .lang-selector-box {
+    padding: 3px 5px;
+  }
+
+  .lang-select {
+    font-size: 0.7rem;
+  }
+
+  .user-badge-box {
+    padding: 2px 6px 2px 3px;
+    gap: 5px;
+  }
+
+  .user-avatar-circle {
+    width: 22px;
+    height: 22px;
+    font-size: 0.68rem;
+  }
+
+  .user-meta-name {
+    font-size: 0.7rem;
+    max-width: 70px;
+  }
+
+  /* Main Composer Layout on Mobile */
+  .main-layout {
+    grid-template-columns: 1fr;
+    padding: 0 0.8rem;
+    margin: 0.6rem auto;
+    gap: 1rem;
+  }
+
+  .card {
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: var(--radius-md);
+  }
+
+  /* Composer Toolbar */
+  .composer-toolbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .quick-tones {
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .tone-btn {
+    font-size: 0.68rem;
+    padding: 4px 8px;
+  }
+
+  /* Media upload */
+  .media-inputs-row {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .media-inputs-row input {
+    width: 100%;
+  }
+
+  .btn-file-upload {
+    width: 100%;
+    justify-content: center;
+    padding: 8px;
+  }
+
+  /* Schedule picker */
+  .schedule-picker {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+  }
+
+  .schedule-picker input {
+    width: 100%;
+  }
+
+  /* Big Action Button */
+  .btn-primary {
+    padding: 12px;
+    font-size: 0.92rem;
+  }
+
+  /* Previews Scrollable Tabs */
+  .platform-tabs {
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 6px;
+    scrollbar-width: none;
+  }
+  .platform-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tab-btn {
+    padding: 6px 10px;
+    font-size: 0.75rem;
+    flex-shrink: 0;
+  }
+
+  /* Mockup Frame on Mobile */
+  .mockup-frame {
+    padding: 10px;
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  .mockup-text {
+    font-size: 0.8rem;
+  }
+
+  .mockup-social-bar {
+    font-size: 0.7rem;
+  }
+
+  /* Dashboard mobile optimization */
+  .dashboard-top-banner {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 1rem;
+    gap: 10px;
+  }
+
+  .btn-create-post {
+    width: 100%;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .stat-card {
+    padding: 0.8rem;
+  }
+
+  .stat-value {
+    font-size: 1.2rem;
+  }
+
+  /* Modals on Mobile */
+  .modal-overlay {
+    padding: 0.5rem;
+  }
+
+  .modal-card {
+    max-width: 100%;
+    max-height: 88vh;
+    border-radius: var(--radius-md);
+    padding: 1rem;
+  }
+
+  .auth-card-modern {
+    max-width: 100%;
+    border-radius: 16px;
+  }
+
+  .auth-card-hero {
+    padding: 1.2rem 1rem 0.9rem;
+  }
+
+  .auth-card-body {
+    padding: 1rem;
+  }
 }
 
-.account-item-instagram:hover {
-  border-color: rgba(225, 48, 108, 0.5);
-  background: rgba(225, 48, 108, 0.05);
-}
+@media (max-width: 480px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
 
-.account-item-facebook.selected {
-  border-color: #1877f2;
-  background: rgba(24, 119, 242, 0.12);
-}
+  .hero-cta-group {
+    flex-direction: column;
+    width: 100%;
+    gap: 8px;
+  }
 
-.account-item-instagram.selected {
-  border-color: #e1306c;
-  background: rgba(225, 48, 108, 0.12);
-}
+  .btn-hero-primary,
+  .btn-hero-secondary {
+    width: 100%;
+  }
 
-.account-item-facebook .chk-box,
-.account-item-instagram .chk-box {
-  width: 22px;
-  height: 22px;
-  border-radius: 6px;
-  border: 2px solid var(--text-muted);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  transition: all 0.2s;
-}
+  .platforms-logo-list {
+    gap: 6px;
+  }
 
-.account-item-facebook.selected .chk-box {
-  background: #1877f2;
-  border-color: #1877f2;
-}
-
-.account-item-instagram.selected .chk-box {
-  background: #e1306c;
-  border-color: #e1306c;
+  .p-chip {
+    font-size: 0.72rem;
+    padding: 4px 8px;
+  }
 }
 
